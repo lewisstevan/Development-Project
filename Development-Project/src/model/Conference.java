@@ -38,6 +38,7 @@ public class Conference
 	/**
 	 * Returns the papers of a selected user.
 	 * @param username The user to return the papers of.
+	 * @param role The role of the user to get the papers for.
 	 * @return [return name] the array of papers associated with this user (null if no papers are found).
 	 */
 	public Collection<Paper> getPapers(final String username, final int role)
