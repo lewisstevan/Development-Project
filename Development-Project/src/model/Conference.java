@@ -37,13 +37,29 @@ public class Conference
 	
 	/**
 	 * Returns the papers of a selected user.
-	 * @param username the user to return papers for.
-	 * @return [return name] the array of papers associated with this user.
+	 * @param username The user to return the papers of.
+	 * @return [return name] the array of papers associated with this user (null if no papers are found).
 	 */
-	public String[] getPapers(String username)
+	public Collection<Paper> getPapers(final String username, final int role)
 	{
-		return null;
-		
+		Collection<Paper> temp = null;
+		switch(role) {
+		case 0:
+			temp = Authors.get(username);
+			break;
+		case 1:
+			temp = Reviewers.get(username);
+			break;
+		case 2:
+			temp = Spcs.get(username);
+			break;
+		case 3:
+			temp = PC;
+			break;
+		default:
+			break;
+		}
+		return temp;
 	}
 
 	/**
