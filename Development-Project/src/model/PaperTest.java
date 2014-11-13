@@ -22,6 +22,12 @@ public class PaperTest {
 		assertEquals(null, test.getPapers("Stevan", "Spc"));
 	}
 	
-
+	@Test
+	public void testassignRole() {
+		test.assignRole("George", "Author");
+		test.Authors.keySet().contains("George");
+		
+		test.assignRole("", "");
+	}
 
 }
