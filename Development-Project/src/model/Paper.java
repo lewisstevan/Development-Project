@@ -25,7 +25,7 @@ public class Paper {
 	
 	public int myAccepted;
 	
-	String[] myArray;
+	public String[] myArray;
 	
 	/**
 	 * Constructor for a paper.
@@ -38,12 +38,14 @@ public class Paper {
 	 */
 	public Paper(String theReview, String theRecommendation) {
 		
-		myReview = theReview;
-		myRecommendation = theRecommendation;
-		myAssignedToReviewer = false;
-		myAssignedToSPC = false;
-		myIsReviewed = false;
-		myAccepted = 0;
+		theReview = null;
+		theRecommendation = null;
+//		theAssignedToReviewer = false;
+//		theAssignedToSPC = false;
+//		theIsReviewed = false;
+//		theAccepted = 0;
+		
+		myArray = new String[4];
 	}
 	
 	/**
@@ -52,13 +54,19 @@ public class Paper {
 	 */
 	public boolean setAssignedToReviewer(String theReviewer) {
 		boolean result = false;
-		if(myArray.length == 0) {
+		if(myArray[0] == null) {
 			myArray[0] = theReviewer;
 			result = true;
-		} else if(myArray.length == 1 || myArray.length == 2 || myArray.length == 3) {
-			myArray[myArray.length] = theReviewer;
+		} else if(myArray[0] != null) {
+			myArray[1] = theReviewer;
 			result = true;
-		}else if(myArray.length == 4){
+		}else if (myArray[1] != null) {
+		    myArray[2] = theReviewer;
+		    result = true;
+		} else if (myArray[2]!= null) {
+			myArray[3] = theReviewer;
+			result = true;
+		}else if(myArray[3] != null){
 			System.out.println("This paper cannot accept any more reviewers");
 			result = true;
 		}
@@ -95,13 +103,6 @@ public class Paper {
 	 * this method will allow the SPC to claim a paper to be reviewed
 	 */
 	public void setReview() {
-		
-	}
-	
-	/**
-	 * this method will allow the Reviewer to make a recommendation to the SPC or the SPC to make a recommendation to the PC.
-	 */
-	public void setRecommendation() {
 		
 	}
 	
