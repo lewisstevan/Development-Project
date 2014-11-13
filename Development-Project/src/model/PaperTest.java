@@ -12,12 +12,10 @@ public class PaperTest {
 	@Before
 	public void setup()
 	{
-		test = new Conference("conference1");
-		test.assignRole("Stevan", "Spc");
-		test = new Conference("conference1");
-		test.assignRole("Stevan", "Spc");
-		paper.setAssignedToReviewer("Stevan");
-		paper.setAssignedToReviewer("Rick");
+//		test = new Conference("conference1");
+//		test.assignRole("Stevan", "Spc");
+		test = new Conference("conference1", "ACFowler");
+//		test.assignRole("Stevan", "Spc");
 	}
 	
 	
@@ -29,9 +27,7 @@ public class PaperTest {
 	@Test
 	public void testassignRole() {
 		test.assignRole("George", "Author");
-		test.Authors.keySet().contains("George");
-		
-		test.assignRole("", "");
+		assertTrue(test.getUsers("Author").contains("George"));
 	}
 	
 	@Test
