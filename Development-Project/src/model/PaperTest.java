@@ -39,7 +39,7 @@ public class PaperTest {
 		Paper paper1 = new Paper("The Adventures of Alan Fowler", "c:/idk");
 		Paper paper2 = new Paper(null, null);
 		
-		paper1.assignReview("johnsmith1", "c:/**");
+		paper1.assignRecommendation("johnsmith1", "c:/**");
 		
 		assertEquals(paper1.myReview, "c:/**");
 		assertEquals(paper2.myReview, null);
