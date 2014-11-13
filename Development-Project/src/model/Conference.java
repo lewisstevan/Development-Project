@@ -45,31 +45,27 @@ public class Conference
 	 * @param role The role of the user to get the papers for (0 - 3).
 	 * @return [return name] the array of papers associated with this user (null if no papers are found).
 	 */
-	public Collection<Paper> getPapers(final String username, final int role)
+	public Collection<Paper> getPapers(final String username, final String role)
 	{
 		Collection<Paper> temp = null;
 		
-		switch(role) {
-		case 0:
+		if (role == "Author")
+		{
 			temp = Authors.get(username);
-			break;
-			
-		case 1:
-			temp = Reviewers.get(username);
-			break;
-			
-		case 2:
-			temp = Spcs.get(username);
-			break;
-			
-		case 3:
-			temp = PC;
-			break;
-			
-		default:
-			break;
-			
 		}
+		else if (role == "Reviewer")
+		{
+			temp = Reviewers.get(username);
+		}
+		else if (role == "SPC")
+		{
+			temp = Spcs.get(username);
+		}
+		else if (role == "PC")
+		{
+			temp = PC;
+		}
+		
 		return temp;
 	}
 
