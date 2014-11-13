@@ -25,6 +25,8 @@ public class Paper {
 	
 	public int myAccepted;
 	
+	String[] myArray;
+	
 	/**
 	 * Constructor for a paper.
 	 * @param theReview initially the paper has not yet been reviewed so it is null.
@@ -50,9 +52,19 @@ public class Paper {
 	 * this method will determine if the paper has been assigned to a reviewer.
 	 * @return false if the paper has not been assigned to a reviewer or true if it has.
 	 */
-	public boolean setAssignedToReviewer() {
-		
-		return false;
+	public boolean setAssignedToReviewer(String theReviewer) {
+		boolean result = false;
+		if(myArray.length == 0) {
+			myArray[0] = theReviewer;
+			result = true;
+		} else if(myArray.length == 1 || myArray.length == 2 || myArray.length == 3) {
+			myArray[myArray.length] = theReviewer;
+			result = true;
+		}else if(myArray.length == 4){
+			System.out.println("This paper cannot accept any more reviewers");
+			result = true;
+		}
+		return result;
 	}
 	
 	/**
