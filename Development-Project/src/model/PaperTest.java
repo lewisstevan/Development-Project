@@ -8,12 +8,16 @@ import org.junit.Test;
 public class PaperTest {
 
 	Conference test;
-	
+	Paper paper;
 	@Before
 	public void setup()
 	{
 		test = new Conference("conference1");
 		test.assignRole("Stevan", "Spc");
+		test = new Conference("conference1");
+		test.assignRole("Stevan", "Spc");
+		paper.setAssignedToReviewer("Stevan");
+		paper.setAssignedToReviewer("Rick");
 	}
 	
 	
