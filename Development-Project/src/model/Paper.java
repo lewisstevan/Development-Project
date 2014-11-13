@@ -36,16 +36,14 @@ public class Paper {
 	 * @param theIsReviewed initially the paper has not been reviewed so it is false.
 	 * @param theAccepted  initially the PC has not made a decision until is goes through the review and scoring process, so its int is 0 to represent undecided.
 	 */
-	public Paper(String theReview, String theRecommendation,
-			boolean theAssignedToReviewer, boolean theAssignedToSPC,
-			boolean theIsReviewed, int theAccepted) {
+	public Paper(String theReview, String theRecommendation) {
 		
-		theReview = null;
-		theRecommendation = null;
-		theAssignedToReviewer = false;
-		theAssignedToSPC = false;
-		theIsReviewed = false;
-		theAccepted = 0;
+		myReview = theReview;
+		myRecommendation = theRecommendation;
+		myAssignedToReviewer = false;
+		myAssignedToSPC = false;
+		myIsReviewed = false;
+		myAccepted = 0;
 	}
 	
 	/**
@@ -107,4 +105,13 @@ public class Paper {
 		
 	}
 	
+	/**
+	 * this method will allow the Reviewer to make a recommendation to the SPC or the SPC to make a recommendation to the PC.
+	 * @param theUsername ?
+	 * @param theFilePath the path in the directory where the recommendation is stored.
+	 */
+	public void assignRecommendation(String theUsername, String theFilePath) {
+		myRecommendation = theFilePath;
+		myAssignedToSPC = true;
+	}
 }

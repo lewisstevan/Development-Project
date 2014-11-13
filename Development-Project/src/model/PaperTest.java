@@ -29,5 +29,17 @@ public class PaperTest {
 		
 		test.assignRole("", "");
 	}
+	
+	@Test
+	public void testAssignReview() {
+		Paper paper1 = new Paper("The Adventures of Alan Fowler", "c:/idk");
+		Paper paper2 = new Paper(null, null);
+		
+		paper1.assignReview("johnsmith1", "c:/**");
+		
+		assertEquals(paper1.myReview, "c:/**");
+		assertEquals(paper2.myReview, null);
+		assertEquals(paper1.myIsReviewed, true);
+	}
 
 }
