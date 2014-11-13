@@ -14,10 +14,14 @@ import java.util.Map;
 public class Conference 
 {
 	/**
+	 * A field representing the title of this conference.
+	 */
+	String title;
+	
+	/**
 	 * Initializes the four maps involved in the Spc, reviewer, and author data.
 	 * Maps hold a key value (the users username) and the papers associated with that user.
 	 */
-	String title;
 	Map<String, Collection<Paper>> Spcs, Reviewers, Authors 
 	= new HashMap<String, Collection<Paper>>();
 	
@@ -95,9 +99,20 @@ public class Conference
 	 * @param username the user to assign a role to.
 	 * @param role the array to place the user into.
 	 */
-	public void assignRole(String username, String role)
+	public void assignRole(final String username, final String role)
 	{
-		
+		if (role == "Spc")
+		{
+			Spcs.put(username, null);
+		}
+		else if (role == "Reviewer")
+		{
+			Reviewers.put(username, null);
+		}
+		else if (role == "Author")
+		{
+			Authors.put(username, null);
+		}
 	}
 	
 	/**
