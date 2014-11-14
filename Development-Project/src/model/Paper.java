@@ -12,8 +12,9 @@ package model;
 
 public class Paper {
 
-
-	public String myReview;
+    public String mySPC;
+    
+    public String[] myReviewers;
 	
 	public String myRecommendation;
 	
@@ -25,7 +26,7 @@ public class Paper {
 	
 	public int myAccepted;
 	
-	public String[] myArray;
+	
 	
 	/**
 	 * Constructor for a paper.
@@ -40,12 +41,14 @@ public class Paper {
 		
 		theReview = null;
 		theRecommendation = null;
-//		theAssignedToReviewer = false;
-//		theAssignedToSPC = false;
-//		theIsReviewed = false;
-//		theAccepted = 0;
+		myAssignedToReviewer = false;
+		myAssignedToSPC = false;
+		myIsReviewed = false;
+		myAccepted = 0;
+	    mySPC = null;
+		myRecommendation = null;
 		
-		myArray = new String[4];
+		myReviewers = new String[4];
 	}
 	
 	/**
@@ -54,19 +57,19 @@ public class Paper {
 	 */
 	public boolean setAssignedToReviewer(String theReviewer) {
 		boolean result = false;
-		if(myArray[0] == null) {
-			myArray[0] = theReviewer;
+		if(myReviewers[0] == null) {
+			myReviewers[0] = theReviewer;
 			result = true;
-		} else if(myArray[0] != null) {
-			myArray[1] = theReviewer;
+		} else if(myReviewers[0] != null) {
+			myReviewers[1] = theReviewer;
 			result = true;
-		}else if (myArray[1] != null) {
-		    myArray[2] = theReviewer;
+		}else if (myReviewers[1] != null) {
+		    myReviewers[2] = theReviewer;
 		    result = true;
-		} else if (myArray[2]!= null) {
-			myArray[3] = theReviewer;
+		} else if (myReviewers[2]!= null) {
+			myReviewers[3] = theReviewer;
 			result = true;
-		}else if(myArray[3] != null){
+		}else if(myReviewers[3] != null){
 			System.out.println("This paper cannot accept any more reviewers");
 			result = true;
 		}
@@ -77,33 +80,50 @@ public class Paper {
 	 * this method will determine if the paper has been assigned to a SPC.
 	 * @return false if the paper has not been assigned to a SPC or true if it has.
 	 */
-	public boolean setAssignedToSPC() {
-		
-		return false;
+	public void setAssignedToSPC(String theSPC) {
+		if(myAssignedToSPC == true) {
+			System.out.println("A Subprogram Chair has already been assigned to this paper.");
+		} else {
+			mySPC = theSPC;
+			myAssignedToSPC = true;
+		}
+	}
+	
+	/**
+	 * Getter method to return is an SPC has been assigned to a paper.
+	 * @return boolean true if a SPC has been assigned and false if a SPC has not been assigned to a paper.
+	 */
+	public boolean isAssignedToSPC() {
+		return myAssignedToSPC;
 	}
 	
 	/**
 	 * this method will determine if the paper has been reviewed by the reviewer.
 	 * @return false if the paper has been reviewed or true if it has.
 	 */
-	public boolean setIsReviewed() {
-		
-		return false;
+	public boolean isReviewed() {
+		return myIsReviewed;
 	}
 	
 	/**
 	 * this method will allow the PC to set the status of a paper based on his or her decision.
 	 * @param theDecision -1 if rejected, 0 if undecided or 1 if accepted.
 	 */
-	public void setStatus(final int theDecision) {
-		
+	public void setStatus(final String theDecision) {
+		if (theDecision.equals("accepted".toLowerCase())) {
+			myAccepted = 1;
+		} else if (theDecision.equals("rejected".toLowerCase())) {
+			myAccepted = -1;
+		}else {
+			myAccepted = 0;
+		}
 	}
 	
 	/**
 	 * this method will allow the SPC to claim a paper to be reviewed
 	 */
 	public void setReview() {
-		
+		myIsReviewed = true;
 	}
 	
 	/**
