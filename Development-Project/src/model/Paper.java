@@ -15,6 +15,10 @@ public class Paper {
     public String mySPC;
     
     public String[] myReviewers;
+    
+    public String myReview;
+    
+    public String[] myReviews;
 	
 	public String myRecommendation;
 	
@@ -49,6 +53,7 @@ public class Paper {
 		myRecommendation = null;
 		
 		myReviewers = new String[4];
+		myReviews = new String[5];
 	}
 	
 	/**
@@ -122,7 +127,8 @@ public class Paper {
 	/**
 	 * this method will allow the SPC to claim a paper to be reviewed
 	 */
-	public void setReview() {
+	public void assignReview(String theUserName, String theFilePath) {
+		myReview = theFilePath;
 		myIsReviewed = true;
 	}
 	
