@@ -111,12 +111,33 @@ public class Conference
 	
 	/**
 	 * Assigns a paper to a user.
-	 * @param username the user to assign the paper to.
-	 * @param paper the paper to assign to the user.
+	 * @param username The user to assign the paper to.
+	 * @param Paper the paper to assign to the user.
+	 * @param role The role of the user that the paper is being assigned to.
 	 */
-	public void assignPaper(String username, Paper paper)
+	public void assignPaper(String username, Paper paper, final String role)
 	{
-		
+		if (role == "Spc")
+		{
+			if(!Spcs.keySet().contains(username)) {
+				assignRole(username, role);
+			}
+			Spcs.get(username).add(paper);
+		}
+		else if (role == "Reviewer")
+		{
+			if(!Reviewers.keySet().contains(username)) {
+				assignRole(username, role);
+			}
+			Reviewers.get(username).add(paper);
+		}
+		else if (role == "Author")
+		{
+			if(!Authors.keySet().contains(username)) {
+				assignRole(username, role);
+			}
+			Authors.get(username).add(paper);
+		}
 	}
 	
 	/**
