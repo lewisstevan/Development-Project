@@ -1,6 +1,8 @@
-package model;
+package test;
 
 import static org.junit.Assert.*;
+import model.Conference;
+import model.Paper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,22 +16,10 @@ public class PaperTest {
 	{
 //		test = new Conference("conference1");
 //		test.assignRole("Stevan", "Spc");
-		test = new Conference("conference1", "ACFowler");
+//		test = new Conference("conference1", "ACFowler");
 //		test.assignRole("Stevan", "Spc");
 	}
-	
-	
-	@Test
-	public void testgetPapers() {
-		assertEquals(null, test.getPapers("Stevan", "Spc"));
-	}
-	
-	@Test
-	public void testassignRole() {
-		test.assignRole("George", "Author");
-		assertTrue(test.getUsers("Author").contains("George"));
-	}
-	
+
 	@Test
 	public void testAssignReview() {
 		Paper paper1 = new Paper("The Adventures of Alan Fowler", "c:/idk");
