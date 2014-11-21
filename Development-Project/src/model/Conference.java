@@ -2,6 +2,7 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 //import java.util.Set;
@@ -11,70 +12,75 @@ import java.util.TreeSet;
  * This class will hold all relevant information about the conference class
  * and provide some operations on that information.
  * @author lewiss6
+ * @author Mickey Johnson
  * @version 1.01
  */
-public class Conference 
-{
+public class Conference {
+	
 	/**
-	 * A field representing the title of this conference.
+	 * A String representing the title of this conference.
 	 */
-	String title;
+	private String title;
 	
 	/**
 	 * Initializes the three maps involved in the Spc, reviewer, and author data.
-	 * Maps hold a key value (the users username) and the papers associated with that user.
+	 * Maps hold a key value (the users username) and the papers associated with that user for that role.
 	 */
 	private Map<String, Collection<Paper>> Spcs;
 	private Map<String, Collection<Paper>> Reviewers;
 	private Map<String, Collection<Paper>> Authors;
 	
 	/**
-	 * The collection of papers the PC has access too (all papers in the conference).
+	 * The user that is assigned as PC for this conference.
 	 */
-	Collection<Paper> PC = new ArrayList<Paper>();
-	
 	private String PCusername;
 	
 	/**
-	 * Constructs a new conference object
-	 * @param title the title of this conference.
+	 * Deadline date for this conference.
 	 */
-	public Conference(String title, String username)
-	{
-		this.title = title;
-		PCusername = username;
+	private GregorianCalendar deadline;
+	
+	/**
+	 * @param theTitle the title of this conference.
+	 * @param thePCUsername The username of the user to assign as PC for this conference.
+	 * @param theDeadline The submission deadline for papers for this conference.
+	 */
+	public Conference(final String theTitle, final String thePCUsername, final GregorianCalendar theDeadline) {
+		title = theTitle;
+		PCusername = thePCUsername;
 		Spcs = new HashMap<String, Collection<Paper>>();
 		Reviewers = new HashMap<String, Collection<Paper>>();
 		Authors = new HashMap<String, Collection<Paper>>();
+		deadline = theDeadline;
 	}
 	
 	/**
 	 * Returns the papers of a selected user.
-	 * @param username The user to return the papers of.
-	 * @param role The role of the user to get the papers for (0 - 3).
+	 * @param theUsername The user to return the papers of.
+	 * @param theRole The role of the user to get the papers for (0 - 3).
 	 * @return The array of papers associated with this user (null if no papers are found).
 	 */
-	public Collection<Paper> getPapers(final String username, final String role)
-	{
+	public Collection<Paper> getPapers(final String theUsername, final String theRole) {
 		Collection<Paper> temp = null;
 		
-		if (role == "Author")
-		{
-			temp = Authors.get(username);
+		if (theRole == "Author") {
+			temp = Authors.get(theUsername);
+		} else if (theRole == "Reviewer") {
+			temp = Reviewers.get(theUsername);
+		} else if (theRole == "Spc") {
+			temp = Spcs.get(theUsername);
+		} else if (theRole == "PC") {
+			temp = new ArrayList<Paper>();
+			for (String s : Authors.keySet()) {
+				Collection<Paper> authorTemp = Authors.get(s);
+				if (authorTemp != null) {
+					for (Paper p : authorTemp) {
+						temp.add(p);
+					}
+				}
+			}
 		}
-		else if (role == "Reviewer")
-		{
-			temp = Reviewers.get(username);
-		}
-		else if (role == "SPC")
-		{
-			temp = Spcs.get(username);
-		}
-		else if (role == "PC")
-		{
-			temp = PC;
-		}
-		
+
 		return temp;
 	}
 
@@ -83,56 +89,46 @@ public class Conference
 	 * @param role the title by which to search under.
 	 * @return A set containing the users associated with the role.
 	 */
-	public Collection<String> getUsers(final String role)
-	{
+	public Collection<String> getUsers(final String role) {
 		Collection<String> temp = null;
 		
-		if (role == "Author")
-		{
+		if (role == "Author") {
 			temp = Authors.keySet();
-		}
-		else if (role == "Reviewer")
-		{
+		} else if (role == "Reviewer") {
 			temp = Reviewers.keySet();
-		}
-		else if (role == "SPC")
-		{
+		} else if (role == "Spc") {
 			temp = Spcs.keySet();
-		}
-		else if (role == "PC")
-		{
+		} else if (role == "PC") {
 			temp = new TreeSet<String>();
 			temp.add(PCusername);
 		}
 		
 		return temp;
-		
 	}
 	
 	/**
-	 * Assigns a paper to a user.
+	 * Assigns a paper to a user for a given role.
 	 * @param username The user to assign the paper to.
 	 * @param Paper the paper to assign to the user.
 	 * @param role The role of the user that the paper is being assigned to.
 	 */
-	public void assignPaper(String username, Paper paper, final String role)
-	{
-		if (role == "Spc")
-		{
+	public void assignPaper(String username, Paper paper, final String role) {
+		if (role == "Spc") {
+			
 			if(!Spcs.keySet().contains(username)) {
 				assignRole(username, role);
 			}
 			Spcs.get(username).add(paper);
-		}
-		else if (role == "Reviewer")
-		{
+			
+		} else if (role == "Reviewer") {
+			
 			if(!Reviewers.keySet().contains(username)) {
 				assignRole(username, role);
 			}
 			Reviewers.get(username).add(paper);
-		}
-		else if (role == "Author")
-		{
+			
+		} else if (role == "Author") {
+			
 			if(!Authors.keySet().contains(username)) {
 				assignRole(username, role);
 			}
@@ -141,34 +137,40 @@ public class Conference
 	}
 	
 	/**
-	 * Assigns a role to a user.
-	 * @param username the user to assign a role to.
-	 * @param role the array to place the user into.
+	 * Allows an author to unsubmit their paper.
+	 * @param username The authors username.
+	 * @param paper the paper the author wants to submit.
 	 */
-	public void assignRole(final String username, final String role)
-	{
-		if (role == "Spc")
-		{
-			Spcs.put(username, null);
-		}
-		else if (role == "Reviewer")
-		{
-			Reviewers.put(username, null);
-		}
-		else if (role == "Author")
-		{
-			Authors.put(username, null);
+	public void removePaper(String username, Paper paper) {
+		Collection<Paper> temp = Authors.get(username);
+		if (temp != null && temp.contains(paper)) {
+			temp.remove(paper);
 		}
 	}
 	
 	/**
-	 * Adds a Paper to a users array of papers.
-	 * @param paper the paper to add to the users list.
+	 * Assigns a role to a user.
+	 * @param username the user to assign a role to.
+	 * @param role the array to place the user into.
 	 */
-	public void addPaper(Paper paper)
-	{
-		
+	public void assignRole(final String username, final String role) {
+		if (role == "Spc") {
+			Spcs.put(username, new ArrayList<Paper>());
+			
+		} else if (role == "Reviewer") {
+			Reviewers.put(username, new ArrayList<Paper>());
+			
+		} else if (role == "Author") {
+			Authors.put(username, new ArrayList<Paper>());
+		}
+	}
+	
+	public GregorianCalendar getDeadline() {
+		return deadline;
 	}
 
+	public String getConferenceTitle() {
+		return title;
+	}
 
 }
