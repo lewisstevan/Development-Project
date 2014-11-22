@@ -146,17 +146,13 @@ public class MainMenuGUI extends javax.swing.JFrame {
         {
         	JLabel paperTitles = new JLabel();
         	JLabel paperSPCReviews = new JLabel();
+        	JLabel paperReviews = new JLabel();
         	paperTitles.setText("Title example");
         	paperSPCReviews.setText("SPCReview example");
-        	contentPane9.add(paperTitles);
-        	contentPane8.add(paperSPCReviews);
-        }
-        
-        for (int x = 0; x < TEST_VARIANT; x++)
-        {
-        	JLabel paperReviews = new JLabel();
         	paperReviews.setText("Reviews example");
+        	contentPane9.add(paperTitles);
         	contentPane8.add(paperReviews);
+        	contentPane8.add(paperSPCReviews);
         }
         
         contentPane7.add(contentPane9);
