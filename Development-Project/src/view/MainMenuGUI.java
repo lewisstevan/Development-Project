@@ -52,9 +52,6 @@ public class MainMenuGUI extends javax.swing.JFrame {
     private JLabel SpcRating;
     private JLabel ReviewerRating;
     private JLabel status;
-    private JLabel paperTitles;
-    private JLabel paperSPCReviews;
-    private JLabel paperReviews;
     private String role;
     
     /**
@@ -62,9 +59,6 @@ public class MainMenuGUI extends javax.swing.JFrame {
      */
     public MainMenuGUI(Conference currentConference, String username, String role) {
     	titleLabel = new JLabel();
-    	paperTitles = new JLabel();
-    	paperSPCReviews = new JLabel();
-    	paperReviews = new JLabel();
         conferenceLabel = new JLabel();
         nameLabel = new JLabel();
         Paper = new JLabel();
@@ -148,10 +142,24 @@ public class MainMenuGUI extends javax.swing.JFrame {
         //change dimension to scroll_size once working data is available.
         contentPane7.setPreferredSize(new Dimension(default_size.width-50, TEST_VARIANT * (default_size.height/4-25)));
         contentPane7.setLayout(new GridLayout(1,2,5,0));
-        contentPane9.add(paperTitles);
+        for (int x = 0; x  < TEST_VARIANT; x++)
+        {
+        	JLabel paperTitles = new JLabel();
+        	JLabel paperSPCReviews = new JLabel();
+        	paperTitles.setText("Title example");
+        	paperSPCReviews.setText("SPCReview example");
+        	contentPane9.add(paperTitles);
+        	contentPane8.add(paperSPCReviews);
+        }
+        
+        for (int x = 0; x < TEST_VARIANT; x++)
+        {
+        	JLabel paperReviews = new JLabel();
+        	paperReviews.setText("Reviews example");
+        	contentPane8.add(paperReviews);
+        }
+        
         contentPane7.add(contentPane9);
-        contentPane8.add(paperSPCReviews);
-        contentPane8.add(paperReviews);
         contentPane7.add(contentPane8);
         
         
@@ -177,9 +185,7 @@ public class MainMenuGUI extends javax.swing.JFrame {
         
         Paper.setText("example");
         
-        paperTitles.setText("example");
-        paperSPCReviews.setText("example");
-        paperReviews.setText("example");
+        
 
         titleLabel.setText("jLabel1");
 
