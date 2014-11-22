@@ -26,6 +26,8 @@ import model.Conference;
  */
 public class MainMenuGUI extends javax.swing.JFrame {
 	
+	private final int TEST_VARIANT = 8;
+	private Dimension scroll_size;
 	private Dimension default_size;
 	private JPanel contentPane1;
 	private JPanel contentPane2;
@@ -36,7 +38,6 @@ public class MainMenuGUI extends javax.swing.JFrame {
 	private JPanel contentPane7;
 	private JPanel contentPane8;
 	private JPanel contentPane9;
-	private JPanel contentPane10;
     private JLabel conferenceLabel;
     private JLabel titleLabel;
     private JButton assignRoleBtn;
@@ -51,12 +52,19 @@ public class MainMenuGUI extends javax.swing.JFrame {
     private JLabel SpcRating;
     private JLabel ReviewerRating;
     private JLabel status;
+    private JLabel paperTitles;
+    private JLabel paperSPCReviews;
+    private JLabel paperReviews;
+    private String role;
     
     /**
      * Creates new form MainMenuGUI
      */
-    public MainMenuGUI(Conference currentConference, String username) {
+    public MainMenuGUI(Conference currentConference, String username, String role) {
     	titleLabel = new JLabel();
+    	paperTitles = new JLabel();
+    	paperSPCReviews = new JLabel();
+    	paperReviews = new JLabel();
         conferenceLabel = new JLabel();
         nameLabel = new JLabel();
         Paper = new JLabel();
@@ -67,7 +75,7 @@ public class MainMenuGUI extends javax.swing.JFrame {
         uploadReviewBtn = new JButton();
         changeRoleBtn = new JButton();
         exitBtn = new JButton();
-        scrollPanel = new JScrollPane();
+        
         contentPane1 = new JPanel();
         contentPane2 = new JPanel();
         contentPane3 = new JPanel();
@@ -77,10 +85,12 @@ public class MainMenuGUI extends javax.swing.JFrame {
         contentPane7 = new JPanel();
         contentPane8 = new JPanel();
         contentPane9 = new JPanel();
-        contentPane10 = new JPanel();
-        default_size = new Dimension(600,600);
+        
+        default_size = new Dimension(800,800);
+  //      scroll_size = new Dimension(default_size.width-25, currentConference.getPapers(username, role).size() * (default_size.height/4-25));
         this.currentConference = currentConference;
         this.username = username;
+        this.role = role;
         createComponents();
     }
 
@@ -127,11 +137,27 @@ public class MainMenuGUI extends javax.swing.JFrame {
         contentPane4.add(contentPane6);
         contentPane2.add(contentPane4);
         
-        //Scroll Panel setup
-        scrollPanel.setPreferredSize(new Dimension(default_size.width-30, (default_size.height/2-30+(default_size.height/4-30)/2) - ((default_size.height/4-30)/2 + 5)));
-        scrollPanel.setBackground(Color.BLACK);
+        
+        contentPane8.setBackground(Color.CYAN);
+        contentPane8.setLayout(new GridLayout(TEST_VARIANT,2,5,0));
+        contentPane9.setBackground(Color.YELLOW);
+        contentPane9.setLayout(new GridLayout(TEST_VARIANT,2,5,0));
 
         
+        
+        //change dimension to scroll_size once working data is available.
+        contentPane7.setPreferredSize(new Dimension(default_size.width-50, TEST_VARIANT * (default_size.height/4-25)));
+        contentPane7.setLayout(new GridLayout(1,2,5,0));
+        contentPane9.add(paperTitles);
+        contentPane7.add(contentPane9);
+        contentPane8.add(paperSPCReviews);
+        contentPane8.add(paperReviews);
+        contentPane7.add(contentPane8);
+        
+        
+        //Scroll Panel setup
+        scrollPanel = new JScrollPane(contentPane7);
+        scrollPanel.setPreferredSize(new Dimension(default_size.width-30, (default_size.height/2-30+(default_size.height/4-30)/2) - ((default_size.height/4-30)/2 + 5)));
         contentPane2.add(scrollPanel);
         add(contentPane2);
         
@@ -150,6 +176,10 @@ public class MainMenuGUI extends javax.swing.JFrame {
         ReviewerRating.setText("Reviewer Rating");
         
         Paper.setText("example");
+        
+        paperTitles.setText("example");
+        paperSPCReviews.setText("example");
+        paperReviews.setText("example");
 
         titleLabel.setText("jLabel1");
 
@@ -179,7 +209,7 @@ public class MainMenuGUI extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-    	new MainMenuGUI(new Conference("ConferenceA","Stevan",new GregorianCalendar()), "Stevan");
+    	new MainMenuGUI(new Conference("ConferenceA","Stevan",new GregorianCalendar()), "Stevan", "Author");
        
     }
 
