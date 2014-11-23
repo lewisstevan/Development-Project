@@ -13,6 +13,7 @@ import java.util.GregorianCalendar;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -21,15 +22,15 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
 
+import Controller.ExitButtonListener;
 import model.Conference;
 
 /**
  *
  * @author lewis_000
  */
-public class MainMenuGUI extends javax.swing.JFrame {
+public class MainMenuGUI extends JFrame {
 	
-	private final int TEST_VARIANT = 8;
 	private Dimension scroll_size;
 	private Dimension default_size;
 	private JPanel contentPane1;
@@ -61,13 +62,13 @@ public class MainMenuGUI extends javax.swing.JFrame {
      * Creates new form MainMenuGUI
      */
     public MainMenuGUI(Conference currentConference, String username, String role) {
+    	status = new JLabel();
     	titleLabel = new JLabel();
         conferenceLabel = new JLabel();
         nameLabel = new JLabel();
         Paper = new JLabel();
         SpcRating = new JLabel();
         ReviewerRating = new JLabel();
-        status = new JLabel();
         assignRoleBtn = new JButton();
         uploadReviewBtn = new JButton();
         changeRoleBtn = new JButton();
@@ -84,7 +85,7 @@ public class MainMenuGUI extends javax.swing.JFrame {
         contentPane9 = new JPanel();
         
         default_size = new Dimension(800,800);
-  //      scroll_size = new Dimension(default_size.width-25, currentConference.getPapers(username, role).size() * (default_size.height/4-25));
+        scroll_size = new Dimension(default_size.width-50, currentConference.getPapers(username, role).size() * (default_size.height/4-25));
         this.currentConference = currentConference;
         this.username = username;
         this.role = role;
@@ -107,16 +108,20 @@ public class MainMenuGUI extends javax.swing.JFrame {
 		FlowLayout layout = new FlowLayout(10,10,10);
         setLayout(layout);
         
+        status.setText("Status");
         SpcRating.setText("Spc Rating");
         ReviewerRating.setText("Reviewer Rating");    
-        Paper.setText("example");
-        titleLabel.setText("jLabel1");
-        conferenceLabel.setText("jLabel2");
-        nameLabel.setText("jLabel2");
+        Paper.setText("Paper Title");
+        titleLabel.setText(role);
+        conferenceLabel.setText(currentConference.getConferenceTitle());
+        nameLabel.setText(username);
         assignRoleBtn.setText("Assign Role"); 
         uploadReviewBtn.setText("Upload Review");
         changeRoleBtn.setText("Change Role");
         exitBtn.setText("Exit");
+        
+        //attach listeners
+        exitBtn.addActionListener(new ExitButtonListener());
         
         //Content pane 1 setup
         contentPane1.setPreferredSize(new Dimension(default_size.width-25, default_size.height/4-25));
@@ -137,18 +142,18 @@ public class MainMenuGUI extends javax.swing.JFrame {
         contentPane5.setLayout(new GridLayout(1,1,5,0));
         
         //content pane 6 setup
-        contentPane6.setLayout(new GridLayout(1,2,5,0));
+        contentPane6.setLayout(new GridLayout(1,3,5,0));
         
         //content pane 7 setup
         //change dimension to scroll_size once working data is available.
-        contentPane7.setPreferredSize(new Dimension(default_size.width-50, TEST_VARIANT * (default_size.height/4-25)));
+        contentPane7.setPreferredSize(scroll_size);
         contentPane7.setLayout(new GridLayout(1,2,5,0));
         
         //content pane 8 setup
-        contentPane8.setLayout(new GridLayout(TEST_VARIANT,2,5,0));     
+        contentPane8.setLayout(new GridLayout(currentConference.getPapers(username, role).size(),3,5,0));     
         
         //content pane 9 setup
-        contentPane9.setLayout(new GridLayout(TEST_VARIANT,2,5,0));
+        contentPane9.setLayout(new GridLayout(currentConference.getPapers(username, role).size(),2,5,0));
        
         //Scroll Panel setup
         scrollPanel = new JScrollPane(contentPane7);
@@ -174,19 +179,23 @@ public class MainMenuGUI extends javax.swing.JFrame {
         contentPane4.add(contentPane5);
         contentPane6.add(ReviewerRating);
         contentPane6.add(SpcRating);
+        contentPane6.add(status);
         contentPane4.add(contentPane6);
         contentPane2.add(contentPane4);
-        for (int x = 0; x  < TEST_VARIANT; x++)
+        for (int x = 0; x  < currentConference.getPapers(username, role).size(); x++)
         {
+        	JLabel status = new JLabel();
         	JLabel paperTitles = new JLabel();
         	JLabel paperSPCReviews = new JLabel();
         	JLabel paperReviews = new JLabel();
+        	status.setText("Accepted");
         	paperTitles.setText("Title example");
         	paperSPCReviews.setText("SPCReview example");
         	paperReviews.setText("Reviews example");
         	contentPane9.add(paperTitles);
         	contentPane8.add(paperReviews);
         	contentPane8.add(paperSPCReviews);
+        	contentPane8.add(status);
         }
         
         contentPane7.add(contentPane9);
@@ -209,9 +218,10 @@ public class MainMenuGUI extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-    	new MainMenuGUI(new Conference("ConferenceA","Stevan",new GregorianCalendar()), "Stevan", "Author");
-    	
-       
+    	model.Paper currentPaper = new model.Paper("10/10", "9/10");
+    	Conference currentConference = new Conference("ConferenceA","Stevan",new GregorianCalendar());
+    	currentConference.assignPaper("Stevan", currentPaper, "Author");
+    	new MainMenuGUI(currentConference, "Stevan", "Author");   
     }
 
 
