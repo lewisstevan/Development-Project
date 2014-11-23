@@ -1,4 +1,7 @@
 package model;
+
+import java.io.Serializable;
+
 /**
  * This method establishes the characteristics of a paper.
  * 
@@ -10,23 +13,27 @@ package model;
  *
  */
 
-public class Paper {
+public class Paper implements Serializable {
 
-    public String mySPC;
+    private String myTitle;
     
-    public String[] myReviewers;
+    private String myPathFile;
     
-    public String myReview;
+	private String mySPC;
     
-    public String[] myReviews;
+    private String[] myReviewers;
+    
+    private String myReview;
+    
+    private String[] myReviews;
 	
-	public String myRecommendation;
+	private String myRecommendation;
 	
-	public boolean myAssignedToReviewer;
+	private boolean myAssignedToReviewer;
 	
-	public boolean myAssignedToSPC;
+	private boolean myAssignedToSPC;
 	
-	public boolean myIsReviewed;
+	private boolean myIsReviewed;
 	
 	public int myAccepted;
 	
@@ -41,26 +48,35 @@ public class Paper {
 	 * @param theIsReviewed initially the paper has not been reviewed so it is false.
 	 * @param theAccepted  initially the PC has not made a decision until is goes through the review and scoring process, so its int is 0 to represent undecided.
 	 */
-	public Paper(String theReview, String theRecommendation) {
+	public Paper(String theTitle, String thePathFile) {
 		
-		theReview = null;
-		theRecommendation = null;
+		myTitle = theTitle;
+		myPathFile = thePathFile;
+		myReview = null;
+		myRecommendation = null;
 		myAssignedToReviewer = false;
 		myAssignedToSPC = false;
 		myIsReviewed = false;
 		myAccepted = 0;
 	    mySPC = null;
-		myRecommendation = null;
-		
+	
 		myReviewers = new String[4];
 		myReviews = new String[5];
+	}
+	
+	public String getSPC() {
+		return mySPC;
+	}
+	
+	public void setMySPC(final String theSPC){
+		mySPC = theSPC;
 	}
 	
 	/**
 	 * this method will determine if the paper has been assigned to a reviewer.
 	 * @return false if the paper has not been assigned to a reviewer or true if it has.
 	 */
-	public boolean setAssignedToReviewer(String theReviewer) {
+	public boolean setAssignedToReviewer(final String theReviewer) {
 		boolean result = false;
 		if(myReviewers[0] == null) {
 			myReviewers[0] = theReviewer;
@@ -85,7 +101,7 @@ public class Paper {
 	 * this method will determine if the paper has been assigned to a SPC.
 	 * @return false if the paper has not been assigned to a SPC or true if it has.
 	 */
-	public void setAssignedToSPC(String theSPC) {
+	public void setAssignedToSPC(final String theSPC) {
 		if(myAssignedToSPC == true) {
 			System.out.println("A Subprogram Chair has already been assigned to this paper.");
 		} else {
@@ -110,6 +126,14 @@ public class Paper {
 		return myIsReviewed;
 	}
 	
+	public boolean getMyAssignedToReviewer() {
+		return myAssignedToReviewer;
+	}
+	
+	public void setMyAssignedToReviewer() {
+		myAssignedToReviewer = true;
+	}
+	
 	/**
 	 * this method will allow the PC to set the status of a paper based on his or her decision.
 	 * @param theDecision -1 if rejected, 0 if undecided or 1 if accepted.
@@ -127,9 +151,17 @@ public class Paper {
 	/**
 	 * this method will allow the SPC to claim a paper to be reviewed
 	 */
-	public void assignReview(String theUserName, String theFilePath) {
+	public void assignReview(final String theUserName, final String theFilePath) {
 		myReview = theFilePath;
 		myIsReviewed = true;
+	}
+	
+	public String getMyRecommendation() {
+		return myRecommendation;
+	}
+	
+	public void setMyRecommendation(final String theRecommendation) {
+		myRecommendation = theRecommendation;
 	}
 	
 	/**
@@ -137,8 +169,15 @@ public class Paper {
 	 * @param theUsername ?
 	 * @param theFilePath the path in the directory where the recommendation is stored.
 	 */
-	public void assignRecommendation(String theUsername, String theFilePath) {
+	public void assignRecommendation(final String theUsername, final String theFilePath) {
 		myRecommendation = theFilePath;
 		myAssignedToSPC = true;
+	}
+	
+	public String toString() {
+		String str = "";
+		str = str + myTitle;
+		
+		return str;
 	}
 }

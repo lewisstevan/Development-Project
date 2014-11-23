@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -15,8 +16,13 @@ import java.util.TreeSet;
  * @author Mickey Johnson
  * @version 1.01
  */
-public class Conference {
+public class Conference implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * A String representing the title of this conference.
 	 */
@@ -171,6 +177,13 @@ public class Conference {
 
 	public String getConferenceTitle() {
 		return title;
+	}
+	
+	public String toString() {
+		String str = "";
+		str = str + title;
+		
+		return str;
 	}
 
 }

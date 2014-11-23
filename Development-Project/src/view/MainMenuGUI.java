@@ -24,6 +24,8 @@ import javax.swing.border.Border;
 
 import Controller.ExitButtonListener;
 import model.Conference;
+import model.Paper;
+import tools.Serializer;
 
 /**
  *
@@ -31,6 +33,7 @@ import model.Conference;
  */
 public class MainMenuGUI extends JFrame {
 	
+	private static final long serialVersionUID = 1L;
 	private Dimension scroll_size;
 	private Dimension default_size;
 	private JPanel contentPane1;
@@ -221,7 +224,17 @@ public class MainMenuGUI extends JFrame {
     	model.Paper currentPaper = new model.Paper("10/10", "9/10");
     	Conference currentConference = new Conference("ConferenceA","Stevan",new GregorianCalendar());
     	currentConference.assignPaper("Stevan", currentPaper, "Author");
-    	new MainMenuGUI(currentConference, "Stevan", "Author");   
+    	Serializer<Conference> conferenceSerializer = new Serializer<Conference>();
+    	conferenceSerializer.serialize(currentConference, "src/files/Conference.ser");
+    	Serializer<Paper> paperSerializer = new Serializer<Paper>();
+    	paperSerializer.serialize(currentPaper, "src/files/Papers.ser");
+    	new MainMenuGUI(conferenceSerializer.deserialize("src/files/Conference.ser"), "Stevan", "Author"); 
+    	
+    	model.Paper testPaper = paperSerializer.deserialize("src/files/Papers.ser");
+    	Conference testConference = conferenceSerializer.deserialize("src/files/Conference.ser");
+    	
+    	System.out.println("Conference : " + testConference.toString());
+    	System.out.println("Papers : " + testPaper.toString());
     }
 
 
