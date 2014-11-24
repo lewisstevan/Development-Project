@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package view;
 
 import java.awt.Color;
@@ -49,7 +45,6 @@ public class MainMenuGUI extends JFrame {
 	private JPanel contentPane9;
     private JLabel conferenceLabel;
     private JLabel titleLabel;
-    private JButton assignRoleBtn;
     private JButton changeRoleBtn;
     private JButton exitBtn;
     private JScrollPane scrollPanel;
@@ -63,11 +58,13 @@ public class MainMenuGUI extends JFrame {
     private JLabel ReviewerRating;
     private JLabel status;
     private String role;
+    private String conferenceName;
     
     /**
      * Creates new form MainMenuGUI
      */
     public MainMenuGUI(String currentConference, String username) {
+    	this.conferenceName = currentConference;
     	status = new JLabel();
     	titleLabel = new JLabel();
         conferenceLabel = new JLabel();
@@ -75,7 +72,6 @@ public class MainMenuGUI extends JFrame {
         Paper = new JLabel();
         SpcRating = new JLabel();
         ReviewerRating = new JLabel();
-        assignRoleBtn = new JButton();
         uploadReviewBtn = new JButton();
         changeRoleBtn = new JButton();
         exitBtn = new JButton();
@@ -157,13 +153,13 @@ public class MainMenuGUI extends JFrame {
         titleLabel.setText(role);
         conferenceLabel.setText(currentConference.getConferenceTitle());
         nameLabel.setText(username);
-        assignRoleBtn.setText("Assign Role"); 
         uploadReviewBtn.setText("Upload Review");
         changeRoleBtn.setText("Change Role");
         exitBtn.setText("Exit");
         
         //attach listeners
         exitBtn.addActionListener(new ExitButtonListener());
+        changeRoleBtn.addActionListener(new changeRoleButtonListener(this));
         
         //Content pane 1 setup
         contentPane1.setPreferredSize(new Dimension(default_size.width-25, default_size.height/4-25));
@@ -245,7 +241,6 @@ public class MainMenuGUI extends JFrame {
         contentPane2.add(scrollPanel);
         add(contentPane2);
         contentPane3.add(changeRoleBtn);
-        contentPane3.add(assignRoleBtn);
         contentPane3.add(uploadReviewBtn);
         contentPane3.add(exitBtn);
         add(contentPane3);
@@ -254,6 +249,21 @@ public class MainMenuGUI extends JFrame {
         setLocationRelativeTo(null);
     }
 
+  private class changeRoleButtonListener implements ActionListener {
+  
+	  JFrame window;
+	  public changeRoleButtonListener(JFrame window)
+	  {
+		  this.window = window;
+	  }
+	  
+  	public void actionPerformed(ActionEvent buttonClick) 
+  	{
+  		new RoleChooserGUI(conferenceName,username, window);
+  	}
+
+  }
+    
     private class ExitButtonListener implements ActionListener {
     	
     	FileOutputStream fos = null;

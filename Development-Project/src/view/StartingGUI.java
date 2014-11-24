@@ -70,7 +70,7 @@ public class StartingGUI extends JFrame
         //setup okButton
         okButton.setText("Continue");
         okButton.setPreferredSize(new Dimension(DEFAULT_SIZE.width/8 + 30, DEFAULT_SIZE.height/4));
-        okButton.addActionListener(new okButtonListener());
+        okButton.addActionListener(new okButtonListener(this));
         
         //setup contentPane1
         contentPane1.setPreferredSize(new Dimension(DEFAULT_SIZE.width, DEFAULT_SIZE.height/4));
@@ -109,10 +109,16 @@ public class StartingGUI extends JFrame
     }
 	
 	private class okButtonListener implements ActionListener {
-
+		
+		JFrame window;
+		public okButtonListener(JFrame window)
+		{
+			this.window = window;
+		}
     	public void actionPerformed(ActionEvent buttonClick) 
     	{
     		new MainMenuGUI(conferenceField.getText(), usernameField.getText());	
+    		window.dispose();
     	}
 
     }
