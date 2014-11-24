@@ -251,11 +251,11 @@ public class MainMenuGUI extends JFrame {
         	}
         	paperTitles.setText(((Paper)papers[x]).getTitle());
         	paperSPCReviews.setText(((Paper)papers[x]).getRecommendation());
-        	if (!((Paper)papers[x]).getReviews().equals(null))
-        	{
-        		paperReviews.setText(((Paper)papers[x]).getReviews().toArray()[1].toString());
-        	}
-        	else 
+//        	if (!((Paper)papers[x]).getReviews().)
+//        	{
+//        		paperReviews.setText(((Paper)papers[x]).getReviews().toArray()[1].toString());
+//        	}
+//        	else 
         		paperReviews.setText("Unreviewed");
         	contentPane9.add(paperTitles);
         	contentPane8.add(paperReviews);
