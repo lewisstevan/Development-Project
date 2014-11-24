@@ -190,7 +190,11 @@ public class Paper implements Serializable{
 	public Collection<String> getReviews() {
 		return myReviews.values();
 	}
-
+	
+	public String getReviewForReviewer(String theReviewer) {
+		return myReviews.get(theReviewer);
+	}
+	
 	/**
 	 * @return the myRecommendation
 	 */

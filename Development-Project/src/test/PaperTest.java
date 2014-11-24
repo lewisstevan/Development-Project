@@ -1,5 +1,7 @@
 package test;
 
+import static org.junit.Assert.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +34,7 @@ public class PaperTest {
 		reviews.put("Mick Johnson", "D:\\MickReview");
 		reviews.put("Stevan Lewis", "D:\\StevanReview");
 		paper4 = new Paper("The Adventures of Alan Fowler pt 2", "D:\\TopSecret",
-				reviews, "D:\\Recommended", true, true, 2, -1);
+				reviews, "D:\\Recommendinator", true, true, 2, -1);
 	}
 	
 	/**
@@ -40,7 +42,12 @@ public class PaperTest {
 	 */
 	@Test
 	public void testAssignToReviewer() {
+		paper.assignToReviewer("Kyle Martens");
+		assertTrue(paper.isAssignedToReviewer("Kyle Martens"));
+		assertFalse(paper3.isAssignedToReviewer("Stevan Lewis"));
 		
+		paper2.assignToReviewer(null);
+		assertFalse(paper2.isAssignedToReviewer("Kim Stuart"));
 	}
 
 	/**
@@ -48,15 +55,43 @@ public class PaperTest {
 	 */
 	@Test
 	public void testAssignToSPC() {
-		
+		paper.assignToSPC(true);
+		assertTrue(paper.isAssignedToSPC());
+		paper.assignToSPC(false);
+		assertFalse(paper.isAssignedToSPC());		
+		paper3.assignToSPC(false);
+		assertFalse(paper3.isAssignedToSPC());
 	}
-
+	
+	/**
+	 * test code for the isAssignedToReviewer method
+	 */
+	@Test
+	public void testIsAssignedToReviewer() {
+		assertFalse(paper.isAssignedToReviewer("Kim Stuart"));
+		assertFalse(paper3.isAssignedToReviewer("Kyle Martens"));
+		assertTrue(paper4.isAssignedToReviewer("Mick Johnson"));
+	}
+	
+	/**
+	 * test code for the isAssignedToSPC method
+	 */
+	@Test
+	public void testIsAssignedToSPC() {
+		assertFalse(paper2.isAssignedToSPC());
+		assertTrue(paper3.isAssignedToSPC());
+	}
+	
 	/**
 	 * test code for the isReviewed method
 	 */
 	@Test
 	public void testIsReviewed() {
-		
+		assertFalse(paper.isReviewed("someone"));
+		assertFalse(paper.isAssignedToReviewer(null));
+		assertFalse(paper3.isReviewed("Kyle Martens"));
+		assertTrue(paper4.isReviewed("Mick Johnson"));
+		assertFalse(paper4.isReviewed("Alan Fowler"));
 	}
 
 	/**
@@ -64,7 +99,10 @@ public class PaperTest {
 	 */
 	@Test
 	public void testIsRecommended() {
-		
+		assertFalse(paper.isRecommended());
+		assertFalse(paper2.isRecommended());
+		assertTrue(paper3.isRecommended());
+		assertTrue(paper4.isRecommended());
 	}
 
 	/**
@@ -72,7 +110,15 @@ public class PaperTest {
 	 */
 	@Test
 	public void testUpdateStatus() {
-		
+		paper.updateStatus(0);
+		assertEquals(paper.getStatus(), 0);
+		paper.updateStatus(-1);
+		assertEquals(paper.getStatus(), -1);
+		assertNotEquals(paper.getStatus(), 1);
+		paper4.updateStatus(1);
+		assertEquals(paper4.getStatus(), 1);
+		paper3.updateStatus(0);
+		assertEquals(paper3.getStatus(), 0);
 	}
 
 	/**
@@ -80,7 +126,20 @@ public class PaperTest {
 	 */
 	@Test
 	public void testAssignReview() {
+		paper.assignReview("Kim Stuart", "C:\\It's OK");
+		assertTrue(paper.isReviewed("Kim Stuart"));
+		assertFalse(paper.isReviewed("Stevan Lewis"));
+		paper.assignReview("Mick Johnson", "C:\\WONDERFUL");
+		paper.assignReview("Kim Stuart", "C:\\OK it's not bad");
+		paper.assignReview("Stevan Lewis", "C:\\Nitpicky but a good read");
+		assertTrue(paper.isReviewed("Kim Stuart"));
+		assertTrue(paper.getReviews().contains("C:\\WONDERFUL"));
+		assertFalse(paper.getReviews().contains("C:\\It's OK"));
+		assertEquals(paper.getReviewForReviewer("Stevan Lewis"), "C:\\Nitpicky but a good read");
+		assertNotEquals(paper.getReviewForReviewer("Mick Johnson"), "C:\\crap crap crap");
 		
+		paper2.assignReview(null, null);
+		assertNotEquals(paper2.getReviewForReviewer("Kyle Martens"), "C:\\I hated this paper!");
 	}
 
 	/**
@@ -88,6 +147,16 @@ public class PaperTest {
 	 */
 	@Test
 	public void testAssignRecommendation() {
+		paper.assignRecommendation("C:\\Perfect", 10);
+		assertEquals(paper.getRecommendation(), "C:\\Perfect");
+		assertEquals(paper.getRating(), 10);
+		paper.assignRecommendation("C:\\I changed my mind", 6);
+		assertNotEquals(paper.getRecommendation(), "C:\\Perfect");
+		assertNotEquals(paper.getRating(), 10);
+		assertEquals(paper.getRecommendation(), "C:\\I changed my mind");
+		assertEquals(paper.getRating(), 6);
 		
+		paper2.assignRecommendation(null, 0);
+		assertNotEquals(paper.getRecommendation(), "C:\\Perfect");
 	}
 }
