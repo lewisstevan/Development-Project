@@ -9,6 +9,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.GregorianCalendar;
 
 import javax.swing.GroupLayout;
@@ -54,6 +56,7 @@ public class MainMenuGUI extends JFrame {
     private JLabel nameLabel;
     private JButton uploadReviewBtn;
     private Conference currentConference;
+    private static model.Paper currentPaper;
     private String username;
     private JLabel Paper;
     private JLabel SpcRating;
@@ -124,7 +127,7 @@ public class MainMenuGUI extends JFrame {
         exitBtn.setText("Exit");
         
         //attach listeners
-        exitBtn.addActionListener(new ExitButtonListener());
+        exitBtn.addActionListener(new ExitListener());
         
         //Content pane 1 setup
         contentPane1.setPreferredSize(new Dimension(default_size.width-25, default_size.height/4-25));
@@ -221,20 +224,37 @@ public class MainMenuGUI extends JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-    	model.Paper currentPaper = new model.Paper("10/10", "9/10");
+    	currentPaper = new model.Paper("10/10", "9/10");
     	Conference currentConference = new Conference("ConferenceA","Stevan",new GregorianCalendar());
     	currentConference.assignPaper("Stevan", currentPaper, "Author");
     	Serializer<Conference> conferenceSerializer = new Serializer<Conference>();
-    	conferenceSerializer.serialize(currentConference, "src/files/Conference.ser");
+    	//conferenceSerializer.serialize(currentConference, "src/files/Conference.ser");
     	Serializer<Paper> paperSerializer = new Serializer<Paper>();
-    	paperSerializer.serialize(currentPaper, "src/files/Papers.ser");
-    	new MainMenuGUI(conferenceSerializer.deserialize("src/files/Conference.ser"), "Stevan", "Author"); 
+    	//paperSerializer.serialize(currentPaper, "src/files/Papers.ser");
     	
-    	model.Paper testPaper = paperSerializer.deserialize("src/files/Papers.ser");
-    	Conference testConference = conferenceSerializer.deserialize("src/files/Conference.ser");
+    	model.Paper testPaper = (Paper)paperSerializer.deserialize("src/files/Papers.ser");
+    	Conference testConference = (Conference) conferenceSerializer.deserialize("src/files/Conference.ser");
+    	
+    	new MainMenuGUI(testConference, "Stevan", "Author"); 
+    	
+
     	
     	System.out.println("Conference : " + testConference.toString());
     	System.out.println("Papers : " + testPaper.toString());
+    }
+    
+    public class ExitListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent buttonClick) {
+			Serializer<Conference> conferenceSerializer = new Serializer<Conference>();
+			Serializer<Paper> paperSerializer = new Serializer<Paper>();
+			conferenceSerializer.serialize(currentConference, "src/files/Conference.ser");
+			paperSerializer.serialize(currentPaper, "src/files/Papers.ser");
+			System.exit(0);	
+			
+		}
+    	
     }
 
 
