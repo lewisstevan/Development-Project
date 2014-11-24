@@ -11,23 +11,21 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.GregorianCalendar;
 
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.border.Border;
 
-import Controller.ExitButtonListener;
 import model.Conference;
 import model.Paper;
-import tools.Serializer;
 
 /**
  *
@@ -35,6 +33,7 @@ import tools.Serializer;
  */
 public class MainMenuGUI extends JFrame {
 	
+	String conferencefilename = "Conference.ser";
 	private static final long serialVersionUID = 1L;
 	private Dimension scroll_size;
 	private Dimension default_size;
@@ -79,7 +78,25 @@ public class MainMenuGUI extends JFrame {
         uploadReviewBtn = new JButton();
         changeRoleBtn = new JButton();
         exitBtn = new JButton();
+        this.currentConference = currentConference;
         
+        //deserialize
+        FileInputStream fis = null;
+        ObjectInputStream in = null;
+        if (new File(conferencefilename).exists())
+        {
+        try
+        {
+        	fis = new FileInputStream(conferencefilename);
+        	in = new ObjectInputStream(fis);
+        	this.currentConference = (Conference) in.readObject();
+        	in.close();
+        }
+        catch (Exception ex)
+        {
+        	ex.printStackTrace();
+        }
+        }
         contentPane1 = new JPanel();
         contentPane2 = new JPanel();
         contentPane3 = new JPanel();
@@ -92,7 +109,7 @@ public class MainMenuGUI extends JFrame {
         
         default_size = new Dimension(800,800);
         scroll_size = new Dimension(default_size.width-50, currentConference.getPapers(username, role).size() * (default_size.height/4-25));
-        this.currentConference = currentConference;
+        
         this.username = username;
         this.role = role;
         createComponents();
@@ -127,7 +144,7 @@ public class MainMenuGUI extends JFrame {
         exitBtn.setText("Exit");
         
         //attach listeners
-        exitBtn.addActionListener(new ExitListener());
+        exitBtn.addActionListener(new ExitButtonListener());
         
         //Content pane 1 setup
         contentPane1.setPreferredSize(new Dimension(default_size.width-25, default_size.height/4-25));
@@ -218,7 +235,28 @@ public class MainMenuGUI extends JFrame {
         setLocationRelativeTo(null);
     }
 
-   
+    private class ExitButtonListener implements ActionListener {
+    	
+    	FileOutputStream fos = null;
+    	ObjectOutputStream out = null;
+
+    	public void actionPerformed(ActionEvent buttonClick) 
+    	{
+    		try
+    		{
+    			fos = new FileOutputStream(conferencefilename);
+    			out = new ObjectOutputStream(fos);
+    			out.writeObject(currentConference);
+    			out.close();
+    		} 
+    		catch (Exception ex)
+    		{
+    			ex.printStackTrace();
+    		}
+    		System.exit(0);	
+    	}
+
+    }
 
     /**
      * @param args the command line arguments
@@ -227,33 +265,9 @@ public class MainMenuGUI extends JFrame {
     	currentPaper = new model.Paper("10/10", "9/10");
     	Conference currentConference = new Conference("ConferenceA","Stevan",new GregorianCalendar());
     	currentConference.assignPaper("Stevan", currentPaper, "Author");
-    	Serializer<Conference> conferenceSerializer = new Serializer<Conference>();
-    	//conferenceSerializer.serialize(currentConference, "src/files/Conference.ser");
-    	Serializer<Paper> paperSerializer = new Serializer<Paper>();
-    	//paperSerializer.serialize(currentPaper, "src/files/Papers.ser");
     	
-    	model.Paper testPaper = (Paper)paperSerializer.deserialize("src/files/Papers.ser");
-    	Conference testConference = (Conference) conferenceSerializer.deserialize("src/files/Conference.ser");
     	
-    	new MainMenuGUI(testConference, "Stevan", "Author"); 
-    	
-
-    	
-    	System.out.println("Conference : " + testConference.toString());
-    	System.out.println("Papers : " + testPaper.toString());
-    }
-    
-    public class ExitListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent buttonClick) {
-			Serializer<Conference> conferenceSerializer = new Serializer<Conference>();
-			Serializer<Paper> paperSerializer = new Serializer<Paper>();
-			conferenceSerializer.serialize(currentConference, "src/files/Conference.ser");
-			paperSerializer.serialize(currentPaper, "src/files/Papers.ser");
-			System.exit(0);	
-			
-		}
+    	new MainMenuGUI(currentConference, "Stevan", "Author"); 
     	
     }
 
