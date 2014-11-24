@@ -102,7 +102,7 @@ public class MainMenuGUI extends JFrame {
         scroll_size = new Dimension(default_size.width-50, scrollSizeMultiplier * (default_size.height/4-25));
         
         
-        this.username = username;
+        this.username = username.toLowerCase();
         this.role = role;
         
         //deserialize
@@ -116,10 +116,10 @@ public class MainMenuGUI extends JFrame {
 	        	in = new ObjectInputStream(fis);
 	        	this.currentConference = (Conference) in.readObject();
 	        	in.close();
-	        	if (this.currentConference.getPapers(username, role) != null)
+	        	if (this.currentConference.getPapers(this.username, role) != null)
 	        	{
-	        		scrollSizeMultiplier = this.currentConference.getPapers(username, role).size();
-	        		papers = this.currentConference.getPapers(username, role).toArray();
+	        		scrollSizeMultiplier = this.currentConference.getPapers(this.username, role).size();
+	        		papers = this.currentConference.getPapers(this.username, role).toArray();
 	        	}      	
 	            createComponents();
 	        }
@@ -134,7 +134,7 @@ public class MainMenuGUI extends JFrame {
         
         else
         {
-        	new AreYouSureGUI(username, conferenceName);
+        	new AreYouSureGUI(this.username, conferenceName);
         	this.dispose();
         }
         window = this;
@@ -162,7 +162,7 @@ public class MainMenuGUI extends JFrame {
         Paper.setText("Paper Title");
         titleLabel.setText(role);
         conferenceLabel.setText(currentConference.getConferenceTitle());
-        nameLabel.setText(username);
+        nameLabel.setText(this.username);
         uploadPaperBtn.setText("Upload Paper");
         changeRoleBtn.setText("Change Role");
         exitBtn.setText("Exit");
@@ -250,7 +250,12 @@ public class MainMenuGUI extends JFrame {
         		status.setText("Undecided");
         	}
         	paperTitles.setText(((Paper)papers[x]).getTitle());
+        	if (((Paper)papers[x]).getRecommendation() != null)
+        	{
         	paperSPCReviews.setText(((Paper)papers[x]).getRecommendation());
+        	}
+        	else
+        		paperSPCReviews.setText("Undecided");
 //        	if (!((Paper)papers[x]).getReviews().)
 //        	{
 //        		paperReviews.setText(((Paper)papers[x]).getReviews().toArray()[1].toString());
