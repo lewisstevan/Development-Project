@@ -33,7 +33,8 @@ import model.Paper;
  */
 public class MainMenuGUI extends JFrame {
 	
-	String conferencefilename = "Conference.ser";
+	int scrollSizeMultiplier;
+	String conferencefilename;
 	private static final long serialVersionUID = 1L;
 	private Dimension scroll_size;
 	private Dimension default_size;
@@ -66,7 +67,7 @@ public class MainMenuGUI extends JFrame {
     /**
      * Creates new form MainMenuGUI
      */
-    public MainMenuGUI(Conference currentConference, String username, String role) {
+    public MainMenuGUI(String currentConference, String username) {
     	status = new JLabel();
     	titleLabel = new JLabel();
         conferenceLabel = new JLabel();
@@ -78,24 +79,39 @@ public class MainMenuGUI extends JFrame {
         uploadReviewBtn = new JButton();
         changeRoleBtn = new JButton();
         exitBtn = new JButton();
-        this.currentConference = currentConference;
+        role = "Author";
+        conferencefilename = currentConference.toLowerCase() + ".ser";
         
         //deserialize
         FileInputStream fis = null;
         ObjectInputStream in = null;
         if (new File(conferencefilename).exists())
         {
-        try
-        {
-        	fis = new FileInputStream(conferencefilename);
-        	in = new ObjectInputStream(fis);
-        	this.currentConference = (Conference) in.readObject();
-        	in.close();
+	        try
+	        {
+	        	fis = new FileInputStream(conferencefilename);
+	        	in = new ObjectInputStream(fis);
+	        	this.currentConference = (Conference) in.readObject();
+	        	in.close();
+	        	if (this.currentConference.getPapers(username, role) != null)
+	        	{
+	        		scrollSizeMultiplier = this.currentConference.getPapers(username, role).size();
+	        	}
+	        	else
+	        	{
+	        		scrollSizeMultiplier = 1;
+	        	}
+	        }
+	        catch (Exception ex)
+	        {
+	        	ex.printStackTrace();
+	        }
         }
-        catch (Exception ex)
+        
+        else
         {
-        	ex.printStackTrace();
-        }
+        	this.currentConference = new Conference(currentConference.toLowerCase(), username, null);
+        	scrollSizeMultiplier = 1;
         }
         contentPane1 = new JPanel();
         contentPane2 = new JPanel();
@@ -108,7 +124,10 @@ public class MainMenuGUI extends JFrame {
         contentPane9 = new JPanel();
         
         default_size = new Dimension(800,800);
-        scroll_size = new Dimension(default_size.width-50, currentConference.getPapers(username, role).size() * (default_size.height/4-25));
+        
+        
+        scroll_size = new Dimension(default_size.width-50, scrollSizeMultiplier * (default_size.height/4-25));
+        
         
         this.username = username;
         this.role = role;
@@ -173,10 +192,10 @@ public class MainMenuGUI extends JFrame {
         contentPane7.setLayout(new GridLayout(1,2,5,0));
         
         //content pane 8 setup
-        contentPane8.setLayout(new GridLayout(currentConference.getPapers(username, role).size(),3,5,0));     
+        contentPane8.setLayout(new GridLayout(scrollSizeMultiplier,3,5,0));     
         
         //content pane 9 setup
-        contentPane9.setLayout(new GridLayout(currentConference.getPapers(username, role).size(),2,5,0));
+        contentPane9.setLayout(new GridLayout(scrollSizeMultiplier,2,5,0));
        
         //Scroll Panel setup
         scrollPanel = new JScrollPane(contentPane7);
@@ -205,7 +224,7 @@ public class MainMenuGUI extends JFrame {
         contentPane6.add(status);
         contentPane4.add(contentPane6);
         contentPane2.add(contentPane4);
-        for (int x = 0; x  < currentConference.getPapers(username, role).size(); x++)
+        for (int x = 0; x  < scrollSizeMultiplier; x++)
         {
         	JLabel status = new JLabel();
         	JLabel paperTitles = new JLabel();
@@ -256,19 +275,6 @@ public class MainMenuGUI extends JFrame {
     		System.exit(0);	
     	}
 
-    }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-    	currentPaper = new model.Paper("10/10", "9/10");
-    	Conference currentConference = new Conference("ConferenceA","Stevan",new GregorianCalendar());
-    	currentConference.assignPaper("Stevan", currentPaper, "Author");
-    	
-    	
-    	new MainMenuGUI(currentConference, "Stevan", "Author"); 
-    	
     }
 
 
