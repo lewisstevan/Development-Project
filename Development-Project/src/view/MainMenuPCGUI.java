@@ -12,12 +12,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -30,6 +33,7 @@ import model.Paper;
  */
 public class MainMenuPCGUI extends JFrame {
 	
+	Paper[] papers;
 	JFrame window;
 	int scrollSizeMultiplier;
 	String conferencefilename;
@@ -79,7 +83,7 @@ public class MainMenuPCGUI extends JFrame {
         exitBtn = new JButton();
         role = "Program Chair";
         conferencefilename = currentConference.toLowerCase() + ".ser";
-        scrollSizeMultiplier = 1;
+        scrollSizeMultiplier = 0;
         
 
         contentPane1 = new JPanel();
@@ -115,12 +119,16 @@ public class MainMenuPCGUI extends JFrame {
 	        	if (this.currentConference.getPapers(username, role) != null)
 	        	{
 	        		scrollSizeMultiplier = this.currentConference.getPapers(username, role).size();
+	        		papers = (Paper[])this.currentConference.getPapers(username, role).toArray();
 	        	}
 	            createComponents();
 	        }
 	        catch (Exception ex)
 	        {
 	        	ex.printStackTrace();
+	        	JOptionPane.showMessageDialog(this, "Data corrupted, please select a different Conference");
+	        	new StartingGUI();
+	        	this.dispose();
 	        }
         }
         
@@ -162,6 +170,7 @@ public class MainMenuPCGUI extends JFrame {
         //attach listeners
         exitBtn.addActionListener(new ExitButtonListener());
         changeRoleBtn.addActionListener(new changeRoleButtonListener(this));
+        uploadPaperBtn.addActionListener(new submitPaperButtonListener());
         
         //Content pane 1 setup
         contentPane1.setPreferredSize(new Dimension(default_size.width-25, default_size.height/4-25));
@@ -228,10 +237,21 @@ public class MainMenuPCGUI extends JFrame {
         	JLabel paperTitles = new JLabel();
         	JLabel paperSPCReviews = new JLabel();
         	JLabel paperReviews = new JLabel();
-        	status.setText("Accepted");
-        	paperTitles.setText("Title example");
-        	paperSPCReviews.setText("SPCReview example");
-        	paperReviews.setText("Reviews example");
+        	if (papers[x].getStatus() == 1)
+        	{
+        		status.setText("Accepted");
+        	}
+        	else if (papers[x].getStatus() == 2)
+        	{
+        		status.setText("Rejected");
+        	}
+        	else
+        	{
+        		status.setText("Undecided");
+        	}
+        	paperTitles.setText(papers[x].getTitle());
+        	paperSPCReviews.setText(papers[x].getRecommendation());
+        	paperReviews.setText(papers[x].getReviews().toArray()[0].toString());
         	contentPane9.add(paperTitles);
         	contentPane8.add(paperReviews);
         	contentPane8.add(paperSPCReviews);
@@ -290,14 +310,27 @@ public class MainMenuPCGUI extends JFrame {
     }
 
     private class submitPaperButtonListener implements ActionListener {
-  	  
+    	FileOutputStream fos = null;
+    	ObjectOutputStream out = null;
     	public void actionPerformed(ActionEvent buttonClick) 
     	{
     		JFileChooser choosePaper = new JFileChooser();
+    		choosePaper.showOpenDialog(window);
     		File Paper = new File(choosePaper.getSelectedFile().getPath());
     		currentConference.assignPaper(username, new Paper(Paper.getName(), Paper.getPath()), role);
-    		new MainMenuGUI(conferenceName, username);
+    		try
+    		{
+    			fos = new FileOutputStream(conferencefilename);
+    			out = new ObjectOutputStream(fos);
+    			out.writeObject(currentConference);
+    			out.close();
+    		} 
+    		catch (Exception ex)
+    		{
+    			ex.printStackTrace();
+    		}
     		window.dispose();
+    		new MainMenuGUI(conferenceName, username);
     	}
 
     }

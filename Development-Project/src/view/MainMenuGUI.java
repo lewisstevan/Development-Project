@@ -33,7 +33,7 @@ import model.Paper;
  */
 public class MainMenuGUI extends JFrame {
 	
-	Paper[] papers;
+	Object[] papers;
 	JFrame window;
 	int scrollSizeMultiplier;
 	String conferencefilename;
@@ -119,12 +119,13 @@ public class MainMenuGUI extends JFrame {
 	        	if (this.currentConference.getPapers(username, role) != null)
 	        	{
 	        		scrollSizeMultiplier = this.currentConference.getPapers(username, role).size();
-	        	}
-	        	papers = (Paper[])this.currentConference.getPapers(username, role).toArray();
+	        		papers = this.currentConference.getPapers(username, role).toArray();
+	        	}      	
 	            createComponents();
 	        }
 	        catch (Exception ex)
 	        {
+	        	ex.printStackTrace();
 	        	JOptionPane.showMessageDialog(this, "Data corrupted, please select a different Conference");
 	        	new StartingGUI();
 	        	this.dispose();
@@ -236,11 +237,11 @@ public class MainMenuGUI extends JFrame {
         	JLabel paperTitles = new JLabel();
         	JLabel paperSPCReviews = new JLabel();
         	JLabel paperReviews = new JLabel();
-        	if (papers[x].getStatus() == 1)
+        	if (((Paper)papers[x]).getStatus() == 1)
         	{
         		status.setText("Accepted");
         	}
-        	else if (papers[x].getStatus() == 2)
+        	else if (((Paper)papers[x]).getStatus() == 2)
         	{
         		status.setText("Rejected");
         	}
@@ -248,9 +249,14 @@ public class MainMenuGUI extends JFrame {
         	{
         		status.setText("Undecided");
         	}
-        	paperTitles.setText(papers[x].getTitle());
-        	paperSPCReviews.setText(papers[x].getRecommendation());
-        	paperReviews.setText(papers[x].getReviews().toArray()[0].toString());
+        	paperTitles.setText(((Paper)papers[x]).getTitle());
+        	paperSPCReviews.setText(((Paper)papers[x]).getRecommendation());
+        	if (!((Paper)papers[x]).getReviews().equals(null))
+        	{
+        		paperReviews.setText(((Paper)papers[x]).getReviews().toArray()[1].toString());
+        	}
+        	else 
+        		paperReviews.setText("Unreviewed");
         	contentPane9.add(paperTitles);
         	contentPane8.add(paperReviews);
         	contentPane8.add(paperSPCReviews);
