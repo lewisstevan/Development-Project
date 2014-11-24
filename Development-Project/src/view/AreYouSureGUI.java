@@ -6,13 +6,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
+import java.text.NumberFormat;
 import java.util.GregorianCalendar;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.text.NumberFormatter;
 
 import model.Conference;
 
@@ -37,11 +42,15 @@ public class AreYouSureGUI extends JFrame
 		contentPane1 = new JPanel();
 		contentPane2 = new JPanel();
 		contentPane3 = new JPanel();
+
+				
 		deadlineField = new JTextField();
 		Continue = new JButton();
 		Cancel = new JButton();
 		Message = new JLabel();
 		deadlineLabel = new JLabel();
+		
+		
 		createElements();
 	}
 	
@@ -54,6 +63,8 @@ public class AreYouSureGUI extends JFrame
 		FlowLayout layout = new FlowLayout();
         setLayout(layout);
 		setPreferredSize(new Dimension(600, 200));
+		
+		
 		
 		//setup message
 		Message.setText("We could not find the Conference you Specified. Would you like to create a new Conference?");
@@ -79,9 +90,10 @@ public class AreYouSureGUI extends JFrame
 		
 		//contentPane3
 		contentPane3.setPreferredSize(new Dimension(600, 40));
-		deadlineLabel.setText("Please choose your conference's deadline:");
-		deadlineLabel.setPreferredSize(new Dimension(250, 30));
+		deadlineLabel.setText("Please choose your conference's deadline (dd/mm/yyyy):");
+		deadlineLabel.setPreferredSize(new Dimension(300, 30));
 		deadlineField.setPreferredSize(new Dimension(200, 30));
+		deadlineField.setText("//");
 		contentPane3.add(deadlineLabel);
 		contentPane3.add(deadlineField);
 		
@@ -103,29 +115,62 @@ public class AreYouSureGUI extends JFrame
     }
 	
 	private class continueButtonListener implements ActionListener {
-		GregorianCalendar deadline;
+		GregorianCalendar deadline = new GregorianCalendar();
 		String conferencefilename = conferenceName + ".ser";
 		FileOutputStream fos = null;
     	ObjectOutputStream out = null;
 
     	public void actionPerformed(ActionEvent buttonClick) 
     	{
+    		int year = 0;
+    		int month = 0;
+    		int day = 0;
     		try
     		{
     			char[] Input = deadlineField.getText().toCharArray();
+    			try
+    			{
+    			if (("" + Input[2]).compareTo("/") != 0 || ("" + Input[5]).compareTo("/") != 0 || Input.length != 10)
+    			{
+    				JOptionPane.showMessageDialog(window, "Please type the date in the specified format(mm/dd/yyyy)");
+    				new AreYouSureGUI(username, conferenceName);
+    				window.dispose();
+    			}
+    			else
+    			{
+    				try 
+    				{
+    					year = Integer.parseInt("" + Input[6] + Input[7] + Input[8] + Input[9]);
+    					month = Integer.parseInt("" + Input[3] + Input[4]);
+    					day = Integer.parseInt("" + Input[0] + Input[1]);
+    					fos = new FileOutputStream(conferencefilename);
+    	    			out = new ObjectOutputStream(fos);
+    	    			deadline.set(year, month, day);
+    	    			out.writeObject(new Conference(conferenceName.toLowerCase(), username, deadline));
+    	    			out.close();
+    	    			new MainMenuPCGUI(conferenceName, username);
+    	        		window.dispose();
+    				}
+    				catch(NumberFormatException e)
+    				{
+    					JOptionPane.showMessageDialog(window, "Please type numbers into the field");
+    					new AreYouSureGUI(username, conferenceName);
+    					window.dispose();
+    				}
+    			}
+    			}
+    			catch (NullPointerException e)
+    			{
+    				new AreYouSureGUI(username, conferenceName);
+    				window.dispose();
+    			}
     			
-    			fos = new FileOutputStream(conferencefilename);
-    			out = new ObjectOutputStream(fos);
-    			deadline.set(((int)c * 1000), arg1, arg2);
-    			out.writeObject(new Conference(conferenceName.toLowerCase(), username, new GregorianCalendar()));
-    			out.close();
     		} 
     		catch (Exception ex)
     		{
     			ex.printStackTrace();
     		}
-    		new MainMenuPCGUI(conferenceName, username);
-    		window.dispose();
+    		
     	}
 
     }

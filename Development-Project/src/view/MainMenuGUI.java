@@ -15,6 +15,7 @@ import java.io.ObjectOutputStream;
 import java.util.GregorianCalendar;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,6 +30,7 @@ import model.Paper;
  */
 public class MainMenuGUI extends JFrame {
 	
+	JFrame window;
 	int scrollSizeMultiplier;
 	String conferencefilename;
 	private static final long serialVersionUID = 1L;
@@ -127,6 +129,7 @@ public class MainMenuGUI extends JFrame {
         	new AreYouSureGUI(username, conferenceName);
         	this.dispose();
         }
+        window = this;
     }
 
     /**
@@ -286,6 +289,18 @@ public class MainMenuGUI extends JFrame {
 
     }
 
+    private class submitPaperButtonListener implements ActionListener {
+  	  
+    	public void actionPerformed(ActionEvent buttonClick) 
+    	{
+    		JFileChooser choosePaper = new JFileChooser();
+    		File Paper = new File(choosePaper.getSelectedFile().getPath());
+    		currentConference.assignPaper(username, new Paper(Paper.getName(), Paper.getPath()), role);
+    		new MainMenuGUI(conferenceName, username);
+    		window.dispose();
+    	}
+
+    }
 
     
 }
