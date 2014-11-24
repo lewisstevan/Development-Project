@@ -92,22 +92,22 @@ public class RoleChooserGUI extends JFrame
     	public void actionPerformed(ActionEvent buttonClick) 
     	{
     		oldWindow.dispose();
-    		if (chooseRole.getSelectedItem() == "Author")
+    		if (chooseRole.getSelectedItem() == "           Author")
     		{
     			new MainMenuGUI(conferenceName, userName);	
     		}
     		
-    		else if (chooseRole.getSelectedItem() == "Reviewer")
+    		else if (chooseRole.getSelectedItem() == "           Reviewer")
     		{
     			new MainMenuReviewerGUI(conferenceName, userName);
     		}
     		
-    		else if (chooseRole.getSelectedItem() == "SubProgram Chair")
+    		else if (chooseRole.getSelectedItem() == "           SubProgram Chair")
     		{
     			new MainMenuSPCGUI(conferenceName, userName);
     		}
     		
-    		else
+    		else if (chooseRole.getSelectedItem() == "           Program Chair")
     		{
     			new MainMenuPCGUI(conferenceName, userName);
     		}

@@ -15,6 +15,7 @@ import java.io.ObjectOutputStream;
 import java.util.GregorianCalendar;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,6 +30,7 @@ import model.Paper;
  */
 public class MainMenuReviewerGUI extends JFrame {
 	
+	JFrame window;
 	int scrollSizeMultiplier;
 	String conferencefilename;
 	private static final long serialVersionUID = 1L;
@@ -45,12 +47,11 @@ public class MainMenuReviewerGUI extends JFrame {
 	private JPanel contentPane9;
     private JLabel conferenceLabel;
     private JLabel titleLabel;
-    private JButton assignRoleBtn;
     private JButton changeRoleBtn;
     private JButton exitBtn;
     private JScrollPane scrollPanel;
     private JLabel nameLabel;
-    private JButton uploadReviewBtn;
+    private JButton uploadPaperBtn;
     private Conference currentConference;
     private static model.Paper currentPaper;
     private String username;
@@ -73,40 +74,14 @@ public class MainMenuReviewerGUI extends JFrame {
         Paper = new JLabel();
         SpcRating = new JLabel();
         ReviewerRating = new JLabel();
-        assignRoleBtn = new JButton();
-        uploadReviewBtn = new JButton();
+        uploadPaperBtn = new JButton();
         changeRoleBtn = new JButton();
         exitBtn = new JButton();
         role = "Reviewer";
-        scrollSizeMultiplier = 1;
         conferencefilename = currentConference.toLowerCase() + ".ser";
+        scrollSizeMultiplier = 1;
         
-        //deserialize
-        FileInputStream fis = null;
-        ObjectInputStream in = null;
-        if (new File(conferencefilename).exists())
-        {
-	        try
-	        {
-	        	fis = new FileInputStream(conferencefilename);
-	        	in = new ObjectInputStream(fis);
-	        	this.currentConference = (Conference) in.readObject();
-	        	in.close();
-	        	if (this.currentConference.getPapers(username, role) != null)
-	        	{
-	        		scrollSizeMultiplier = this.currentConference.getPapers(username, role).size();
-	        	}
-	        }
-	        catch (Exception ex)
-	        {
-	        	ex.printStackTrace();
-	        }
-        }
-        
-        else
-        {
-        	this.currentConference = new Conference(currentConference.toLowerCase(), username, null);
-        }
+
         contentPane1 = new JPanel();
         contentPane2 = new JPanel();
         contentPane3 = new JPanel();
@@ -125,7 +100,36 @@ public class MainMenuReviewerGUI extends JFrame {
         
         this.username = username;
         this.role = role;
-        createComponents();
+        
+        //deserialize
+        FileInputStream fis = null;
+        ObjectInputStream in = null;
+        if (new File(conferencefilename).exists())
+        {
+	        try
+	        {
+	        	fis = new FileInputStream(conferencefilename);
+	        	in = new ObjectInputStream(fis);
+	        	this.currentConference = (Conference) in.readObject();
+	        	in.close();
+	        	if (this.currentConference.getPapers(username, role) != null)
+	        	{
+	        		scrollSizeMultiplier = this.currentConference.getPapers(username, role).size();
+	        	}
+	            createComponents();
+	        }
+	        catch (Exception ex)
+	        {
+	        	ex.printStackTrace();
+	        }
+        }
+        
+        else
+        {
+        	new AreYouSureGUI(username, conferenceName);
+        	this.dispose();
+        }
+        window = this;
     }
 
     /**
@@ -151,8 +155,7 @@ public class MainMenuReviewerGUI extends JFrame {
         titleLabel.setText(role);
         conferenceLabel.setText(currentConference.getConferenceTitle());
         nameLabel.setText(username);
-        assignRoleBtn.setText("Assign Role"); 
-        uploadReviewBtn.setText("Upload Review");
+        uploadPaperBtn.setText("Upload Paper");
         changeRoleBtn.setText("Change Role");
         exitBtn.setText("Exit");
         
@@ -240,8 +243,7 @@ public class MainMenuReviewerGUI extends JFrame {
         contentPane2.add(scrollPanel);
         add(contentPane2);
         contentPane3.add(changeRoleBtn);
-        contentPane3.add(assignRoleBtn);
-        contentPane3.add(uploadReviewBtn);
+        contentPane3.add(uploadPaperBtn);
         contentPane3.add(exitBtn);
         add(contentPane3);
         
@@ -249,6 +251,21 @@ public class MainMenuReviewerGUI extends JFrame {
         setLocationRelativeTo(null);
     }
 
+  private class changeRoleButtonListener implements ActionListener {
+  
+	  JFrame window;
+	  public changeRoleButtonListener(JFrame window)
+	  {
+		  this.window = window;
+	  }
+	  
+  	public void actionPerformed(ActionEvent buttonClick) 
+  	{
+  		new RoleChooserGUI(conferenceName,username, window);
+  	}
+
+  }
+    
     private class ExitButtonListener implements ActionListener {
     	
     	FileOutputStream fos = null;
@@ -272,19 +289,18 @@ public class MainMenuReviewerGUI extends JFrame {
 
     }
 
-    private class changeRoleButtonListener implements ActionListener {
-    	  
-  	  JFrame window;
-  	  public changeRoleButtonListener(JFrame window)
-  	  {
-  		  this.window = window;
-  	  }
+    private class submitPaperButtonListener implements ActionListener {
   	  
     	public void actionPerformed(ActionEvent buttonClick) 
     	{
-    		new RoleChooserGUI(conferenceName,username, window);
+    		JFileChooser choosePaper = new JFileChooser();
+    		File Paper = new File(choosePaper.getSelectedFile().getPath());
+    		currentConference.assignPaper(username, new Paper(Paper.getName(), Paper.getPath()), role);
+    		new MainMenuGUI(conferenceName, username);
+    		window.dispose();
     	}
 
     }
+
     
 }
