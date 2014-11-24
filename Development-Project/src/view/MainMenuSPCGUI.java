@@ -78,6 +78,7 @@ public class MainMenuSPCGUI extends JFrame {
         changeRoleBtn = new JButton();
         exitBtn = new JButton();
         role = "SubProgram Chair";
+        scrollSizeMultiplier = 1;
         conferencefilename = currentConference.toLowerCase() + ".ser";
         
         //deserialize
@@ -95,10 +96,6 @@ public class MainMenuSPCGUI extends JFrame {
 	        	{
 	        		scrollSizeMultiplier = this.currentConference.getPapers(username, role).size();
 	        	}
-	        	else
-	        	{
-	        		scrollSizeMultiplier = 1;
-	        	}
 	        }
 	        catch (Exception ex)
 	        {
@@ -109,7 +106,6 @@ public class MainMenuSPCGUI extends JFrame {
         else
         {
         	this.currentConference = new Conference(currentConference.toLowerCase(), username, null);
-        	scrollSizeMultiplier = 1;
         }
         contentPane1 = new JPanel();
         contentPane2 = new JPanel();

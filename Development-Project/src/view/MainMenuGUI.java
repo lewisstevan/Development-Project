@@ -49,7 +49,7 @@ public class MainMenuGUI extends JFrame {
     private JButton exitBtn;
     private JScrollPane scrollPanel;
     private JLabel nameLabel;
-    private JButton uploadReviewBtn;
+    private JButton uploadPaperBtn;
     private Conference currentConference;
     private static model.Paper currentPaper;
     private String username;
@@ -72,43 +72,14 @@ public class MainMenuGUI extends JFrame {
         Paper = new JLabel();
         SpcRating = new JLabel();
         ReviewerRating = new JLabel();
-        uploadReviewBtn = new JButton();
+        uploadPaperBtn = new JButton();
         changeRoleBtn = new JButton();
         exitBtn = new JButton();
         role = "Author";
         conferencefilename = currentConference.toLowerCase() + ".ser";
+        scrollSizeMultiplier = 1;
         
-        //deserialize
-        FileInputStream fis = null;
-        ObjectInputStream in = null;
-        if (new File(conferencefilename).exists())
-        {
-	        try
-	        {
-	        	fis = new FileInputStream(conferencefilename);
-	        	in = new ObjectInputStream(fis);
-	        	this.currentConference = (Conference) in.readObject();
-	        	in.close();
-	        	if (this.currentConference.getPapers(username, role) != null)
-	        	{
-	        		scrollSizeMultiplier = this.currentConference.getPapers(username, role).size();
-	        	}
-	        	else
-	        	{
-	        		scrollSizeMultiplier = 1;
-	        	}
-	        }
-	        catch (Exception ex)
-	        {
-	        	ex.printStackTrace();
-	        }
-        }
-        
-        else
-        {
-        	this.currentConference = new Conference(currentConference.toLowerCase(), username, null);
-        	scrollSizeMultiplier = 1;
-        }
+
         contentPane1 = new JPanel();
         contentPane2 = new JPanel();
         contentPane3 = new JPanel();
@@ -127,7 +98,35 @@ public class MainMenuGUI extends JFrame {
         
         this.username = username;
         this.role = role;
-        createComponents();
+        
+        //deserialize
+        FileInputStream fis = null;
+        ObjectInputStream in = null;
+        if (new File(conferencefilename).exists())
+        {
+	        try
+	        {
+	        	fis = new FileInputStream(conferencefilename);
+	        	in = new ObjectInputStream(fis);
+	        	this.currentConference = (Conference) in.readObject();
+	        	in.close();
+	        	if (this.currentConference.getPapers(username, role) != null)
+	        	{
+	        		scrollSizeMultiplier = this.currentConference.getPapers(username, role).size();
+	        	}
+	            createComponents();
+	        }
+	        catch (Exception ex)
+	        {
+	        	ex.printStackTrace();
+	        }
+        }
+        
+        else
+        {
+        	new AreYouSureGUI(username, conferenceName);
+        	this.dispose();
+        }
     }
 
     /**
@@ -153,7 +152,7 @@ public class MainMenuGUI extends JFrame {
         titleLabel.setText(role);
         conferenceLabel.setText(currentConference.getConferenceTitle());
         nameLabel.setText(username);
-        uploadReviewBtn.setText("Upload Review");
+        uploadPaperBtn.setText("Upload Paper");
         changeRoleBtn.setText("Change Role");
         exitBtn.setText("Exit");
         
@@ -241,7 +240,7 @@ public class MainMenuGUI extends JFrame {
         contentPane2.add(scrollPanel);
         add(contentPane2);
         contentPane3.add(changeRoleBtn);
-        contentPane3.add(uploadReviewBtn);
+        contentPane3.add(uploadPaperBtn);
         contentPane3.add(exitBtn);
         add(contentPane3);
         
