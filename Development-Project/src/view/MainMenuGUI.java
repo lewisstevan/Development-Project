@@ -12,10 +12,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.GregorianCalendar;
-
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -57,11 +53,8 @@ public class MainMenuGUI extends JFrame {
     private JLabel nameLabel;
     private JButton uploadPaperBtn;
     private Conference currentConference;
-    private static model.Paper currentPaper;
     private String username;
     private JLabel Paper;
-    private JLabel SpcRating;
-    private JLabel ReviewerRating;
     private JLabel status;
     private String role;
     private String conferenceName;
@@ -76,8 +69,6 @@ public class MainMenuGUI extends JFrame {
         conferenceLabel = new JLabel();
         nameLabel = new JLabel();
         Paper = new JLabel();
-        SpcRating = new JLabel();
-        ReviewerRating = new JLabel();
         uploadPaperBtn = new JButton();
         changeRoleBtn = new JButton();
         exitBtn = new JButton();
@@ -99,11 +90,10 @@ public class MainMenuGUI extends JFrame {
         default_size = new Dimension(800,800);
         
         
-        scroll_size = new Dimension(default_size.width-50, scrollSizeMultiplier * (default_size.height/4-25));
+        
         
         
         this.username = username.toLowerCase();
-        this.role = role;
         
         //deserialize
         FileInputStream fis = null;
@@ -120,7 +110,8 @@ public class MainMenuGUI extends JFrame {
 	        	{
 	        		scrollSizeMultiplier = this.currentConference.getPapers(this.username, role).size();
 	        		papers = this.currentConference.getPapers(this.username, role).toArray();
-	        	}      	
+	        	}     
+	        	scroll_size = new Dimension(default_size.width-50, scrollSizeMultiplier * (default_size.height/8-25));
 	            createComponents();
 	        }
 	        catch (Exception ex)
@@ -157,8 +148,6 @@ public class MainMenuGUI extends JFrame {
         setLayout(layout);
         
         status.setText("Status");
-        SpcRating.setText("Spc Rating");
-        ReviewerRating.setText("Reviewer Rating");    
         Paper.setText("Paper Title");
         titleLabel.setText(role);
         conferenceLabel.setText(currentConference.getConferenceTitle());
@@ -226,8 +215,6 @@ public class MainMenuGUI extends JFrame {
         add(contentPane1);
         contentPane5.add(Paper);
         contentPane4.add(contentPane5);
-        contentPane6.add(ReviewerRating);
-        contentPane6.add(SpcRating);
         contentPane6.add(status);
         contentPane4.add(contentPane6);
         contentPane2.add(contentPane4);
@@ -256,15 +243,14 @@ public class MainMenuGUI extends JFrame {
         	}
         	else
         		paperSPCReviews.setText("Undecided");
-//        	if (!((Paper)papers[x]).getReviews().)
-//        	{
-//        		paperReviews.setText(((Paper)papers[x]).getReviews().toArray()[1].toString());
-//        	}
-//        	else 
+        	
+        	if (!((Paper)papers[x]).getReviews().isEmpty())
+        	{
+        		paperReviews.setText("Has reviews");
+        	}
+        	else 
         		paperReviews.setText("Unreviewed");
         	contentPane9.add(paperTitles);
-        	contentPane8.add(paperReviews);
-        	contentPane8.add(paperSPCReviews);
         	contentPane8.add(status);
         }
         
@@ -295,6 +281,36 @@ public class MainMenuGUI extends JFrame {
   	}
 
   }
+  
+  private class submitPaperButtonListener implements ActionListener {
+  	FileOutputStream fos = null;
+  	ObjectOutputStream out = null;
+  	public void actionPerformed(ActionEvent buttonClick) 
+  	{
+  		JFileChooser choosePaper = new JFileChooser();
+  		int status = choosePaper.showOpenDialog(window);
+  		if (status != JFileChooser.CANCEL_OPTION)
+  		{
+
+  	  		File Paper = new File(choosePaper.getSelectedFile().getPath());
+	  		currentConference.assignPaper(username, new Paper(Paper.getName(), Paper.getPath()), role);
+	  		try
+	  		{
+	  			fos = new FileOutputStream(conferencefilename);
+	  			out = new ObjectOutputStream(fos);
+	  			out.writeObject(currentConference);
+	  			out.close();
+	  		} 
+	  		catch (Exception ex)
+	  		{
+	  			ex.printStackTrace();
+	  		}
+	  		window.dispose();
+	  		new MainMenuGUI(conferenceName, username);
+  		}
+  	}
+
+  }
     
     private class ExitButtonListener implements ActionListener {
     	
@@ -317,33 +333,5 @@ public class MainMenuGUI extends JFrame {
     		System.exit(0);	
     	}
 
-    }
-
-    private class submitPaperButtonListener implements ActionListener {
-    	FileOutputStream fos = null;
-    	ObjectOutputStream out = null;
-    	public void actionPerformed(ActionEvent buttonClick) 
-    	{
-    		JFileChooser choosePaper = new JFileChooser();
-    		choosePaper.showOpenDialog(window);
-    		File Paper = new File(choosePaper.getSelectedFile().getPath());
-    		currentConference.assignPaper(username, new Paper(Paper.getName(), Paper.getPath()), role);
-    		try
-    		{
-    			fos = new FileOutputStream(conferencefilename);
-    			out = new ObjectOutputStream(fos);
-    			out.writeObject(currentConference);
-    			out.close();
-    		} 
-    		catch (Exception ex)
-    		{
-    			ex.printStackTrace();
-    		}
-    		window.dispose();
-    		new MainMenuGUI(conferenceName, username);
-    	}
-
-    }
-
-    
+    } 
 }
