@@ -74,15 +74,15 @@ public class StartingGUI extends JFrame
         
         //setup contentPane1
         contentPane1.setPreferredSize(new Dimension(DEFAULT_SIZE.width, DEFAULT_SIZE.height/4));
-        contentPane1.setBackground(Color.RED);
+//        contentPane1.setBackground(Color.RED);
         
         //setup space filler
         spaceFiller.setPreferredSize(new Dimension(DEFAULT_SIZE.width-DEFAULT_SIZE.width/2, DEFAULT_SIZE.height/4));
-        spaceFiller.setBackground(Color.black);
+//        spaceFiller.setBackground(Color.black);
         
         //setup contentPane2
         contentPane2.setPreferredSize(new Dimension(DEFAULT_SIZE.width, DEFAULT_SIZE.height/4));
-		contentPane2.setBackground(Color.yellow);
+//		contentPane2.setBackground(Color.yellow);
 		
 		//add elements
 		contentPane1.add(usernameLabel);

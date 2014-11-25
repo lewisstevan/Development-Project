@@ -201,15 +201,15 @@ public class MainMenuGUI extends JFrame {
         scrollPanel.setPreferredSize(new Dimension(default_size.width-30, (default_size.height/2-30+(default_size.height/4-30)/2) - ((default_size.height/4-30)/2 + 5)));
  
         //set background colors for testing
-        contentPane1.setBackground(Color.red);
-        conferenceLabel.setBackground(Color.BLACK); 
-        nameLabel.setBackground(Color.BLACK);
-        titleLabel.setBackground(Color.BLACK);
-        contentPane2.setBackground(Color.GREEN);
-        contentPane4.setBackground(Color.RED);
-        contentPane8.setBackground(Color.CYAN);
-        contentPane9.setBackground(Color.YELLOW);
-        contentPane3.setBackground(Color.RED);
+//        contentPane1.setBackground(Color.red);
+//        conferenceLabel.setBackground(Color.BLACK); 
+//        nameLabel.setBackground(Color.BLACK);
+//        titleLabel.setBackground(Color.BLACK);
+//        contentPane2.setBackground(Color.GREEN);
+//        contentPane4.setBackground(Color.RED);
+//        contentPane8.setBackground(Color.CYAN);
+//        contentPane9.setBackground(Color.YELLOW);
+//        contentPane3.setBackground(Color.RED);
         
         //adding components
         contentPane1.add(conferenceLabel);
