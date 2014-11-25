@@ -52,6 +52,9 @@ public class ConferenceTest {
 		test.assignPaper("Jon", dummyPaper, "Spc");
 		assertEquals(test.getPapers("Jim", "Spc"), null);
 		
+		//Tests that the Spc assign paper method updates the assignedtospc field in the paper
+		assertTrue(dummyPaper.isAssignedToSPC());
+		
 		//Tests the functionality of getPapers for the PC (should return all papers in the conference.)
 		Paper dummy2 = new Paper(null, null);
 		test.assignPaper("George", dummy2, "Author");

@@ -91,6 +91,25 @@ public class Conference implements Serializable{
 	}
 
 	/**
+	 * Gets the number of papers assigned to the specified user for the specified role.
+	 * @param theUsername The username of the user to be checked.
+	 * @param theRole The role of the user to be checked.
+	 * @return The number of papers assigned to the specified user for the specified role.
+	 */
+	public int getNumberofPapers(final String theUsername, final String theRole) {
+		int num = 0;
+		if (theRole == "Author") {
+			num = Authors.get(theUsername).size();
+		} else if (theRole == "Reviewer") {
+			num = Authors.get(theUsername).size();;
+		} else if (theRole == "Spc") {
+			num = Authors.get(theUsername).size();;
+		}
+		return num;
+	}
+	
+	
+	/**
 	 * Returns the users associated with a certain role.
 	 * @param role the title by which to search under.
 	 * @return A set containing the users associated with the role.
@@ -125,6 +144,7 @@ public class Conference implements Serializable{
 				assignRole(username, role);
 			}
 			Spcs.get(username).add(paper);
+			paper.assignToSPC(true);
 			
 		} else if (role == "Reviewer") {
 			
