@@ -130,7 +130,7 @@ public class AreYouSureGUI extends JFrame
     			char[] Input = deadlineField.getText().toCharArray();
     			try
     			{
-    			if (("" + Input[2]).compareTo("/") != 0 || ("" + Input[5]).compareTo("/") != 0 || Input.length != 10)
+    			if (Input.length != 10 || ("" + Input[2]).compareTo("/") != 0 || ("" + Input[5]).compareTo("/") != 0 )
     			{
     				JOptionPane.showMessageDialog(window, "Please type the date in the specified format(mm/dd/yyyy)");
     				new AreYouSureGUI(username, conferenceName);
