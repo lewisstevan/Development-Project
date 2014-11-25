@@ -47,6 +47,7 @@ public class MainMenuGUI extends JFrame {
 	private JPanel contentPane9;
     private JLabel conferenceLabel;
     private JLabel titleLabel;
+    private JLabel reviewLabel;
     private JButton changeRoleBtn;
     private JButton exitBtn;
     private JScrollPane scrollPanel;
@@ -69,6 +70,7 @@ public class MainMenuGUI extends JFrame {
         conferenceLabel = new JLabel();
         nameLabel = new JLabel();
         Paper = new JLabel();
+        reviewLabel = new JLabel();
         uploadPaperBtn = new JButton();
         changeRoleBtn = new JButton();
         exitBtn = new JButton();
@@ -150,6 +152,7 @@ public class MainMenuGUI extends JFrame {
         status.setText("Status");
         Paper.setText("Paper Title");
         titleLabel.setText(role);
+        reviewLabel.setText("Reviews");
         conferenceLabel.setText(currentConference.getConferenceTitle());
         nameLabel.setText(this.username);
         uploadPaperBtn.setText("Upload Paper");
@@ -215,6 +218,7 @@ public class MainMenuGUI extends JFrame {
         add(contentPane1);
         contentPane5.add(Paper);
         contentPane4.add(contentPane5);
+        contentPane6.add(reviewLabel);
         contentPane6.add(status);
         contentPane4.add(contentPane6);
         contentPane2.add(contentPane4);
@@ -222,7 +226,6 @@ public class MainMenuGUI extends JFrame {
         {
         	JLabel status = new JLabel();
         	JLabel paperTitles = new JLabel();
-        	JLabel paperSPCReviews = new JLabel();
         	JLabel paperReviews = new JLabel();
         	if (((Paper)papers[x]).getStatus() == 1)
         	{
@@ -237,12 +240,6 @@ public class MainMenuGUI extends JFrame {
         		status.setText("Undecided");
         	}
         	paperTitles.setText(((Paper)papers[x]).getTitle());
-        	if (((Paper)papers[x]).getRecommendation() != null)
-        	{
-        	paperSPCReviews.setText(((Paper)papers[x]).getRecommendation());
-        	}
-        	else
-        		paperSPCReviews.setText("Undecided");
         	
         	if (!((Paper)papers[x]).getReviews().isEmpty())
         	{
@@ -251,6 +248,7 @@ public class MainMenuGUI extends JFrame {
         	else 
         		paperReviews.setText("Unreviewed");
         	contentPane9.add(paperTitles);
+        	contentPane8.add(paperReviews);
         	contentPane8.add(status);
         }
         
