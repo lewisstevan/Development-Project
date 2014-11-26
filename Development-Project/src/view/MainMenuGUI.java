@@ -71,7 +71,7 @@ public class MainMenuGUI extends JFrame {
     /**
      * Creates new form MainMenuGUI
      */
-    public MainMenuGUI(String currentConference, String username) {
+    public MainMenuGUI(String currentConference, String username, String role) {
     	this.conferenceName = currentConference;
     	df = new SimpleDateFormat();
     	df.applyPattern("dd/MM/yyyy");
@@ -89,7 +89,7 @@ public class MainMenuGUI extends JFrame {
         uploadPaperBtn = new JButton();
         changeRoleBtn = new JButton();
         exitBtn = new JButton();
-        role = "Author";
+        this.role = role;
         conferencefilename = currentConference.toLowerCase() + ".ser";
         scrollSizeMultiplier = 0;
         
@@ -147,6 +147,7 @@ public class MainMenuGUI extends JFrame {
         }
         window = this;
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -331,7 +332,7 @@ public class MainMenuGUI extends JFrame {
 	  			ex.printStackTrace();
 	  		}
 	  		window.dispose();
-	  		new MainMenuGUI(conferenceName, username);
+	  		new MainMenuGUI(conferenceName, username, role);
   		}
   	}
 

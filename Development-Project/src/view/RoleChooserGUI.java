@@ -94,7 +94,7 @@ public class RoleChooserGUI extends JFrame
     		oldWindow.dispose();
     		if (chooseRole.getSelectedItem() == "           Author")
     		{
-    			new MainMenuGUI(conferenceName, userName);	
+    			new MainMenuGUI(conferenceName, userName, "Author");	
     		}
     		
     		else if (chooseRole.getSelectedItem() == "           Reviewer")

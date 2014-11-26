@@ -117,7 +117,7 @@ public class StartingGUI extends JFrame
 		}
     	public void actionPerformed(ActionEvent buttonClick) 
     	{
-    		new MainMenuGUI(conferenceField.getText(), usernameField.getText());	
+    		new MainMenuGUI(conferenceField.getText(), usernameField.getText(), "Author");	
     		window.dispose();
     	}
 
