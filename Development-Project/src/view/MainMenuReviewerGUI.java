@@ -35,4 +35,15 @@ public class MainMenuReviewerGUI extends MainMenuGUI {
     public MainMenuReviewerGUI(String currentConference, String username) {
     	super(currentConference, username, "Reviewer");
     }
+    
+    /**
+     * adds the Unique buttons to perform the unique functions.
+     */
+    //Use the STANDARD_BUTTON_SIZE constant to set the size of your button to the GUI
+    //standard
+    @Override
+    public void addUniqueButtons()
+    {
+    	
+    }
 }

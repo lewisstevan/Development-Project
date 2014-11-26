@@ -56,7 +56,7 @@ public class Paper implements Serializable{
     /**
      * the acceptance status of the paper
      */
-    private int myAccepted;
+    private String myAccepted;
 	
     /**
      * Constructor for a paper
@@ -65,7 +65,7 @@ public class Paper implements Serializable{
      */
 	public Paper(String theTitle, String theFilePath) {
 		this(theTitle, theFilePath, new HashMap<String, String>(), null,
-			false, false, -1, 0);
+			false, false, -1);
 	}
 	
 	/**
@@ -81,7 +81,7 @@ public class Paper implements Serializable{
 	 */
 	public Paper(String theTitle, String theFilePath, Map<String, String> theReviews,
 				String theRecommendation, boolean theAssignedtoSPC, boolean theIsRecommended,
-				int theRating, int theIsAccepted) {
+				int theRating) {
 		myTitle = theTitle;
 		myFilePath = theFilePath;
 		myReviews = theReviews;
@@ -89,7 +89,7 @@ public class Paper implements Serializable{
 		myAssignedToSPC = theAssignedtoSPC;
 		myIsRecommended = theIsRecommended;
 		myRating = theRating;
-		myAccepted = theIsAccepted;
+		myAccepted = "Undecided";
 	}
 	
 	/**
@@ -138,12 +138,30 @@ public class Paper implements Serializable{
 		return myIsRecommended;
 	}
 	
+	public String isReviewed()
+	{
+		String result = "Unreviewed";
+		if (!getReviews().isEmpty())
+    	{
+    		result = "Has Reviews";
+    	}
+		return result;
+	}
+	
 	/**
 	 * this method will allow the PC to set the status of a paper based on his or her decision.
 	 * @param theDecision -1 if rejected, 0 if undecided or 1 if accepted.
 	 */
-	public void updateStatus(int theStatus) {
-		myAccepted = theStatus;
+	public void updateStatus(Boolean accepted) {
+		if (accepted == true)
+		{
+			myAccepted = "Accepted";
+		}
+		
+		else if (accepted == false)
+		{
+			myAccepted = "Rejected";
+		}
 	}
 	
 	/**
@@ -195,6 +213,7 @@ public class Paper implements Serializable{
 		return myReviews.get(theReviewer);
 	}
 	
+	
 	/**
 	 * @return the myRecommendation
 	 */
@@ -212,7 +231,7 @@ public class Paper implements Serializable{
 	/**
 	 * @return the acceptance status of the paper
 	 */
-	public int getStatus() {
+	public String getStatus() {
 		return myAccepted;
 	}
 	
