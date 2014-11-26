@@ -281,6 +281,10 @@ public class MainMenuGUI extends JFrame {
     {
     	uploadPaperBtn.setPreferredSize(STANDARD_BUTTON_SIZE);
     	uploadPaperBtn.setEnabled(MainMenuGUI.this.currentConference.beforeDue());
+    	if (!uploadPaperBtn.isEnabled())
+    	{
+    		uploadPaperBtn.setToolTipText("It is past this conferences deadline");
+    	}
     	unsubmitPaperBtn.setPreferredSize(STANDARD_BUTTON_SIZE);
         contentPane3.add(uploadPaperBtn);
         contentPane3.add(unsubmitPaperBtn);
@@ -346,6 +350,7 @@ public class MainMenuGUI extends JFrame {
   		{
   			JOptionPane.showMessageDialog(MainMenuGUI.this, "The deadline has past.\nYou may no longer submit papers to this conference");
   			uploadPaperBtn.setEnabled(false);
+    		uploadPaperBtn.setToolTipText("It is past this conferences deadline");
   			contentPane3.repaint();
   		}
   		else
