@@ -280,6 +280,7 @@ public class MainMenuGUI extends JFrame {
     public void addUniqueButtons()
     {
     	uploadPaperBtn.setPreferredSize(STANDARD_BUTTON_SIZE);
+    	uploadPaperBtn.setEnabled(MainMenuGUI.this.currentConference.beforeDue());
     	unsubmitPaperBtn.setPreferredSize(STANDARD_BUTTON_SIZE);
         contentPane3.add(uploadPaperBtn);
         contentPane3.add(unsubmitPaperBtn);
@@ -341,28 +342,37 @@ public class MainMenuGUI extends JFrame {
   	ObjectOutputStream out = null;
   	public void actionPerformed(ActionEvent buttonClick) 
   	{
-  		String paperName = (String)JOptionPane.showInputDialog(MainMenuGUI.this, "Please type in the title of your paper\n", 
-  				"Conference Organizer", JOptionPane.PLAIN_MESSAGE);
-  		JFileChooser choosePaper = new JFileChooser();
-  		int status = choosePaper.showOpenDialog(MainMenuGUI.this);
-  		if (status != JFileChooser.CANCEL_OPTION)
+  		if (!MainMenuGUI.this.currentConference.beforeDue())
   		{
-
-  	  		File Paper = new File(choosePaper.getSelectedFile().getPath());
-	  		currentConference.assignPaper(username, new Paper(paperName, Paper.getPath()), role);
-	  		try
+  			JOptionPane.showMessageDialog(MainMenuGUI.this, "The deadline has past.\nYou may no longer submit papers to this conference");
+  			uploadPaperBtn.setEnabled(false);
+  			contentPane3.repaint();
+  		}
+  		else
+  		{
+	  		String paperName = (String)JOptionPane.showInputDialog(MainMenuGUI.this, "Please type in the title of your paper\n", 
+	  				"Conference Organizer", JOptionPane.PLAIN_MESSAGE);
+	  		JFileChooser choosePaper = new JFileChooser();
+	  		int status = choosePaper.showOpenDialog(MainMenuGUI.this);
+	  		if (status != JFileChooser.CANCEL_OPTION)
 	  		{
-	  			fos = new FileOutputStream(conferenceFilename);
-	  			out = new ObjectOutputStream(fos);
-	  			out.writeObject(currentConference);
-	  			out.close();
-	  		} 
-	  		catch (Exception ex)
-	  		{
-	  			ex.printStackTrace();
+	
+	  	  		File Paper = new File(choosePaper.getSelectedFile().getPath());
+		  		currentConference.assignPaper(username, new Paper(paperName, Paper.getPath()), role);
+		  		try
+		  		{
+		  			fos = new FileOutputStream(conferenceFilename);
+		  			out = new ObjectOutputStream(fos);
+		  			out.writeObject(currentConference);
+		  			out.close();
+		  		} 
+		  		catch (Exception ex)
+		  		{
+		  			ex.printStackTrace();
+		  		}
+		  		MainMenuGUI.this.dispose();
+		  		new MainMenuGUI(conferenceName, username, role);
 	  		}
-	  		MainMenuGUI.this.dispose();
-	  		new MainMenuGUI(conferenceName, username, role);
   		}
   	}
 

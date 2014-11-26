@@ -211,6 +211,16 @@ public class Conference implements Serializable{
 		return title;
 	}
 	
+	public boolean beforeDue()
+	{
+		boolean result = true;
+		if (new GregorianCalendar().after(this.deadline))
+		{
+			result = false;
+		}
+		return result;
+	}
+	
 	public String toString() {
 		String str = "";
 		str = str + title;
