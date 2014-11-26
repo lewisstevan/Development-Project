@@ -12,6 +12,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
+
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -33,6 +35,8 @@ public class MainMenuReviewerGUI extends JFrame {
 	JFrame window;
 	int scrollSizeMultiplier;
 	String conferencefilename;
+	SimpleDateFormat df;
+	public static int SECONDS_IN_A_DAY = 24 * 60 * 60;
 	private static final long serialVersionUID = 1L;
 	private Dimension scroll_size;
 	private Dimension default_size;
@@ -47,6 +51,11 @@ public class MainMenuReviewerGUI extends JFrame {
 	private JPanel contentPane9;
     private JLabel conferenceLabel;
     private JLabel titleLabel;
+    private JLabel reviewLabel;
+    private JLabel deadlineLabel;
+    private JLabel deadlinelbl;
+    private JLabel conferencelbl;
+    private JLabel namelbl;
     private JButton changeRoleBtn;
     private JButton exitBtn;
     private JScrollPane scrollPanel;
@@ -55,8 +64,6 @@ public class MainMenuReviewerGUI extends JFrame {
     private Conference currentConference;
     private String username;
     private JLabel Paper;
-    private JLabel SpcRating;
-    private JLabel ReviewerRating;
     private JLabel status;
     private String role;
     private String conferenceName;
@@ -66,13 +73,19 @@ public class MainMenuReviewerGUI extends JFrame {
      */
     public MainMenuReviewerGUI(String currentConference, String username) {
     	this.conferenceName = currentConference;
+    	df = new SimpleDateFormat();
+    	df.applyPattern("dd/MM/yyyy");
+    	deadlineLabel = new JLabel();
+        deadlinelbl = new JLabel();
+        conferencelbl = new JLabel();
+        namelbl = new JLabel();
     	status = new JLabel();
     	titleLabel = new JLabel();
         conferenceLabel = new JLabel();
         nameLabel = new JLabel();
         Paper = new JLabel();
-        SpcRating = new JLabel();
-        ReviewerRating = new JLabel();
+        reviewLabel = new JLabel();
+        
         uploadPaperBtn = new JButton();
         changeRoleBtn = new JButton();
         exitBtn = new JButton();
@@ -91,7 +104,7 @@ public class MainMenuReviewerGUI extends JFrame {
         contentPane8 = new JPanel();
         contentPane9 = new JPanel();
         
-        default_size = new Dimension(800,800);
+        default_size = new Dimension(600,600);
         
         
         
@@ -151,15 +164,18 @@ public class MainMenuReviewerGUI extends JFrame {
 		FlowLayout layout = new FlowLayout(10,10,10);
         setLayout(layout);
         
+        conferencelbl.setText(this.currentConference.getConferenceTitle());
+        deadlineLabel.setText("Deadline:");
+        deadlinelbl.setText(df.format(currentConference.getDeadline().getTime()));
+        namelbl.setText(username);
+        changeRoleBtn.setText(role);
         status.setText("Status");
-        SpcRating.setText("Spc Rating");
-        ReviewerRating.setText("Reviewer Rating");    
         Paper.setText("Paper Title");
-        titleLabel.setText(role);
-        conferenceLabel.setText(currentConference.getConferenceTitle());
-        nameLabel.setText(this.username);
+        titleLabel.setText("Role:");
+        reviewLabel.setText("Reviews");
+        conferenceLabel.setText("Conference:");
+        nameLabel.setText("Name:");
         uploadPaperBtn.setText("Upload Paper");
-        changeRoleBtn.setText("Change Role");
         exitBtn.setText("Exit");
         
         //attach listeners
@@ -168,8 +184,8 @@ public class MainMenuReviewerGUI extends JFrame {
         uploadPaperBtn.addActionListener(new submitPaperButtonListener());
         
         //Content pane 1 setup
-        contentPane1.setPreferredSize(new Dimension(default_size.width-25, default_size.height/4-25));
-        contentPane1.setLayout(new GridLayout(3,2,0,1));
+        contentPane1.setPreferredSize(new Dimension(default_size.width/2, default_size.height/4-25));
+        contentPane1.setLayout(new GridLayout(4,2,0,1));
         
         //Content pane 2 setup
         contentPane2.setPreferredSize(new Dimension(default_size.width-25, (default_size.height/2-25+(default_size.height/4-25)/2)));
@@ -204,25 +220,32 @@ public class MainMenuReviewerGUI extends JFrame {
         scrollPanel.setPreferredSize(new Dimension(default_size.width-30, (default_size.height/2-30+(default_size.height/4-30)/2) - ((default_size.height/4-30)/2 + 5)));
  
         //set background colors for testing
-        contentPane1.setBackground(Color.red);
-        conferenceLabel.setBackground(Color.BLACK); 
-        nameLabel.setBackground(Color.BLACK);
-        titleLabel.setBackground(Color.BLACK);
-        contentPane2.setBackground(Color.GREEN);
-        contentPane4.setBackground(Color.RED);
-        contentPane8.setBackground(Color.CYAN);
-        contentPane9.setBackground(Color.YELLOW);
-        contentPane3.setBackground(Color.RED);
+//        contentPane1.setBackground(Color.red);
+//        conferenceLabel.setBackground(Color.BLACK); 
+//        nameLabel.setBackground(Color.BLACK);
+//        titleLabel.setBackground(Color.BLACK);
+//        contentPane2.setBackground(Color.GREEN);
+//        contentPane4.setBackground(Color.RED);
+//        contentPane8.setBackground(Color.CYAN);
+//        contentPane9.setBackground(Color.YELLOW);
+//        contentPane3.setBackground(Color.RED);
         
         //adding components
+
         contentPane1.add(conferenceLabel);
+        contentPane1.add(conferencelbl);
+
         contentPane1.add(nameLabel);
+        contentPane1.add(namelbl);
+
         contentPane1.add(titleLabel);
+        contentPane1.add(changeRoleBtn);
+        contentPane1.add(deadlineLabel);
+        contentPane1.add(deadlinelbl);
         add(contentPane1);
         contentPane5.add(Paper);
         contentPane4.add(contentPane5);
-        contentPane6.add(ReviewerRating);
-        contentPane6.add(SpcRating);
+        contentPane6.add(reviewLabel);
         contentPane6.add(status);
         contentPane4.add(contentPane6);
         contentPane2.add(contentPane4);
@@ -230,7 +253,6 @@ public class MainMenuReviewerGUI extends JFrame {
         {
         	JLabel status = new JLabel();
         	JLabel paperTitles = new JLabel();
-        	JLabel paperSPCReviews = new JLabel();
         	JLabel paperReviews = new JLabel();
         	if (((Paper)papers[x]).getStatus() == 1)
         	{
@@ -245,12 +267,6 @@ public class MainMenuReviewerGUI extends JFrame {
         		status.setText("Undecided");
         	}
         	paperTitles.setText(((Paper)papers[x]).getTitle());
-        	if (((Paper)papers[x]).getRecommendation() != null)
-        	{
-        	paperSPCReviews.setText(((Paper)papers[x]).getRecommendation());
-        	}
-        	else
-        		paperSPCReviews.setText("Undecided");
         	
         	if (!((Paper)papers[x]).getReviews().isEmpty())
         	{
@@ -260,7 +276,6 @@ public class MainMenuReviewerGUI extends JFrame {
         		paperReviews.setText("Unreviewed");
         	contentPane9.add(paperTitles);
         	contentPane8.add(paperReviews);
-        	contentPane8.add(paperSPCReviews);
         	contentPane8.add(status);
         }
         
@@ -268,7 +283,6 @@ public class MainMenuReviewerGUI extends JFrame {
         contentPane7.add(contentPane8);
         contentPane2.add(scrollPanel);
         add(contentPane2);
-        contentPane3.add(changeRoleBtn);
         contentPane3.add(uploadPaperBtn);
         contentPane3.add(exitBtn);
         add(contentPane3);
@@ -276,6 +290,7 @@ public class MainMenuReviewerGUI extends JFrame {
         pack();
         setLocationRelativeTo(null);
     }
+    
 
   private class changeRoleButtonListener implements ActionListener {
   

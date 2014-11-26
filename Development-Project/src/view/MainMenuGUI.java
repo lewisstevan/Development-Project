@@ -36,8 +36,8 @@ public class MainMenuGUI extends JFrame {
 	int scrollSizeMultiplier;
 	String conferencefilename;
 	SimpleDateFormat df;
-	private static final long serialVersionUID = 1L;
 	public static int SECONDS_IN_A_DAY = 24 * 60 * 60;
+	private static final long serialVersionUID = 1L;
 	private Dimension scroll_size;
 	private Dimension default_size;
 	private JPanel contentPane1;
@@ -75,16 +75,17 @@ public class MainMenuGUI extends JFrame {
     	this.conferenceName = currentConference;
     	df = new SimpleDateFormat();
     	df.applyPattern("dd/MM/yyyy");
+    	deadlineLabel = new JLabel();
+        deadlinelbl = new JLabel();
+        conferencelbl = new JLabel();
+        namelbl = new JLabel();
     	status = new JLabel();
     	titleLabel = new JLabel();
         conferenceLabel = new JLabel();
         nameLabel = new JLabel();
         Paper = new JLabel();
         reviewLabel = new JLabel();
-        deadlineLabel = new JLabel();
-        deadlinelbl = new JLabel();
-        conferencelbl = new JLabel();
-        namelbl = new JLabel();
+        
         uploadPaperBtn = new JButton();
         changeRoleBtn = new JButton();
         exitBtn = new JButton();
@@ -183,7 +184,7 @@ public class MainMenuGUI extends JFrame {
         uploadPaperBtn.addActionListener(new submitPaperButtonListener());
         
         //Content pane 1 setup
-        contentPane1.setPreferredSize(new Dimension(default_size.width/3-25, default_size.height/4-25));
+        contentPane1.setPreferredSize(new Dimension(default_size.width/2, default_size.height/4-25));
         contentPane1.setLayout(new GridLayout(4,2,0,1));
         
         //Content pane 2 setup
