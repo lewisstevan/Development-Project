@@ -12,6 +12,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
+
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -33,7 +35,9 @@ public class MainMenuGUI extends JFrame {
 	JFrame window;
 	int scrollSizeMultiplier;
 	String conferencefilename;
+	SimpleDateFormat df;
 	private static final long serialVersionUID = 1L;
+	public static int SECONDS_IN_A_DAY = 24 * 60 * 60;
 	private Dimension scroll_size;
 	private Dimension default_size;
 	private JPanel contentPane1;
@@ -48,6 +52,10 @@ public class MainMenuGUI extends JFrame {
     private JLabel conferenceLabel;
     private JLabel titleLabel;
     private JLabel reviewLabel;
+    private JLabel deadlineLabel;
+    private JLabel deadlinelbl;
+    private JLabel conferencelbl;
+    private JLabel namelbl;
     private JButton changeRoleBtn;
     private JButton exitBtn;
     private JScrollPane scrollPanel;
@@ -65,12 +73,18 @@ public class MainMenuGUI extends JFrame {
      */
     public MainMenuGUI(String currentConference, String username) {
     	this.conferenceName = currentConference;
+    	df = new SimpleDateFormat();
+    	df.applyPattern("dd/MM/yyyy");
     	status = new JLabel();
     	titleLabel = new JLabel();
         conferenceLabel = new JLabel();
         nameLabel = new JLabel();
         Paper = new JLabel();
         reviewLabel = new JLabel();
+        deadlineLabel = new JLabel();
+        deadlinelbl = new JLabel();
+        conferencelbl = new JLabel();
+        namelbl = new JLabel();
         uploadPaperBtn = new JButton();
         changeRoleBtn = new JButton();
         exitBtn = new JButton();
@@ -89,7 +103,7 @@ public class MainMenuGUI extends JFrame {
         contentPane8 = new JPanel();
         contentPane9 = new JPanel();
         
-        default_size = new Dimension(800,800);
+        default_size = new Dimension(600,600);
         
         
         
@@ -149,14 +163,18 @@ public class MainMenuGUI extends JFrame {
 		FlowLayout layout = new FlowLayout(10,10,10);
         setLayout(layout);
         
+        conferencelbl.setText(this.currentConference.getConferenceTitle());
+        deadlineLabel.setText("Deadline:");
+        deadlinelbl.setText(df.format(currentConference.getDeadline().getTime()));
+        namelbl.setText(username);
+        changeRoleBtn.setText(role);
         status.setText("Status");
         Paper.setText("Paper Title");
-        titleLabel.setText(role);
+        titleLabel.setText("Role:");
         reviewLabel.setText("Reviews");
-        conferenceLabel.setText(currentConference.getConferenceTitle());
-        nameLabel.setText(this.username);
+        conferenceLabel.setText("Conference:");
+        nameLabel.setText("Name:");
         uploadPaperBtn.setText("Upload Paper");
-        changeRoleBtn.setText("Change Role");
         exitBtn.setText("Exit");
         
         //attach listeners
@@ -165,8 +183,8 @@ public class MainMenuGUI extends JFrame {
         uploadPaperBtn.addActionListener(new submitPaperButtonListener());
         
         //Content pane 1 setup
-        contentPane1.setPreferredSize(new Dimension(default_size.width-25, default_size.height/4-25));
-        contentPane1.setLayout(new GridLayout(3,2,0,1));
+        contentPane1.setPreferredSize(new Dimension(default_size.width/3-25, default_size.height/4-25));
+        contentPane1.setLayout(new GridLayout(4,2,0,1));
         
         //Content pane 2 setup
         contentPane2.setPreferredSize(new Dimension(default_size.width-25, (default_size.height/2-25+(default_size.height/4-25)/2)));
@@ -212,9 +230,17 @@ public class MainMenuGUI extends JFrame {
 //        contentPane3.setBackground(Color.RED);
         
         //adding components
+
         contentPane1.add(conferenceLabel);
+        contentPane1.add(conferencelbl);
+
         contentPane1.add(nameLabel);
+        contentPane1.add(namelbl);
+
         contentPane1.add(titleLabel);
+        contentPane1.add(changeRoleBtn);
+        contentPane1.add(deadlineLabel);
+        contentPane1.add(deadlinelbl);
         add(contentPane1);
         contentPane5.add(Paper);
         contentPane4.add(contentPane5);
@@ -256,7 +282,6 @@ public class MainMenuGUI extends JFrame {
         contentPane7.add(contentPane8);
         contentPane2.add(scrollPanel);
         add(contentPane2);
-        contentPane3.add(changeRoleBtn);
         contentPane3.add(uploadPaperBtn);
         contentPane3.add(exitBtn);
         add(contentPane3);
@@ -264,6 +289,7 @@ public class MainMenuGUI extends JFrame {
         pack();
         setLocationRelativeTo(null);
     }
+    
 
   private class changeRoleButtonListener implements ActionListener {
   
