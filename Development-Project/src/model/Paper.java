@@ -224,8 +224,13 @@ public class Paper implements Serializable{
 	/**
 	 * @return the rating given to this paper
 	 */
-	public int getRating(){
-		return myRating;
+	public String getRating(){
+		String result = "Undecided";
+		if (myRating > -1 && myRating < 11)
+		{
+			result = Integer.toString(myRating);
+		}
+		return result;
 	}
 	
 	/**

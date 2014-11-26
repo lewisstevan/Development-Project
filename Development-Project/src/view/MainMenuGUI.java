@@ -38,7 +38,7 @@ public class MainMenuGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private Dimension DEFAULT_SIZE = new Dimension(600,600);
 	private JPanel contentPane1, contentPane2, contentPane3, contentPane4, contentPane5, contentPane6,
-	contentPane7, contentPane8, contentPane9;
+	contentPane7, contentPane8, contentPane9, conferenceNamePane;
     private JLabel conferenceLabel, titleLabel, deadlineLabel, deadlinelbl, conferencelbl, namelbl,
     nameLabel, paperNamelbl, paperStatuslbl, reviewLabel, spcScoreLabel;
     private JButton changeRoleBtn, uploadPaperBtn;
@@ -68,7 +68,8 @@ public class MainMenuGUI extends JFrame {
         changeRoleBtn = new JButton();
         this.role = role;
         conferenceFilename = currentConference.toLowerCase() + ".ser";
-        scrollSizeMultiplier = 0;       
+        scrollSizeMultiplier = 0;     
+        conferenceNamePane = new JPanel();
         contentPane1 = new JPanel();
         contentPane2 = new JPanel();
         contentPane3 = new JPanel();
@@ -138,11 +139,12 @@ public class MainMenuGUI extends JFrame {
 		FlowLayout layout = new FlowLayout(10,10,10);
         setLayout(layout);
         
-        //set the text of various labels
+        //set the text and font of various labels
+        conferencelbl.setFont(conferencelbl.getFont().deriveFont(20.0f));
         conferencelbl.setText(this.currentConference.getConferenceTitle());
         deadlineLabel.setText("      Deadline:");
         deadlinelbl.setText(df.format(currentConference.getDeadline().getTime()));
-        namelbl.setText(username);
+        namelbl.setText(username.substring(0, 1).toUpperCase() + username.substring(1).toLowerCase());
         changeRoleBtn.setText(role);
         paperStatuslbl.setText("Status");
         paperNamelbl.setText("Paper Title");
@@ -175,10 +177,13 @@ public class MainMenuGUI extends JFrame {
         		System.exit(0);	
         	}
         });   
+        //conference pane setup
+        conferenceNamePane.setPreferredSize(new Dimension(DEFAULT_SIZE.width -25, DEFAULT_SIZE.height/23));
+        conferenceNamePane.setLayout(new FlowLayout(FlowLayout.LEFT));
         
         //Content pane 1 setup
-        contentPane1.setPreferredSize(new Dimension(DEFAULT_SIZE.width/2-50, DEFAULT_SIZE.height/4-25));
-        contentPane1.setLayout(new GridLayout(4,2,-100,1));
+        contentPane1.setPreferredSize(new Dimension(DEFAULT_SIZE.width/2-50, DEFAULT_SIZE.height/4-50));
+        contentPane1.setLayout(new GridLayout(3,2,-100,1));
         
         //Content pane 2 setup
         contentPane2.setPreferredSize(new Dimension(DEFAULT_SIZE.width-25, (DEFAULT_SIZE.height/2-25+(DEFAULT_SIZE.height/4-25)/2)));
@@ -225,9 +230,9 @@ public class MainMenuGUI extends JFrame {
         
         //adding components
 
-        contentPane1.add(conferenceLabel);
-        contentPane1.add(conferencelbl);
-
+        conferenceNamePane.add(conferenceLabel);
+        conferenceNamePane.add(conferencelbl);
+        add(conferenceNamePane);
         contentPane1.add(nameLabel);
         contentPane1.add(namelbl);
 
@@ -249,6 +254,7 @@ public class MainMenuGUI extends JFrame {
         	JLabel paperStatus = new JLabel();
         	JLabel paperTitles = new JLabel();
         	JLabel paperReviews = new JLabel();
+        	paperScore.setText(((Paper)papersList[x]).getRating());
         	paperStatus.setText(((Paper)papersList[x]).getStatus());   	
         	paperTitles.setText(((Paper)papersList[x]).getTitle()); 	
         	paperReviews.setText(((Paper)papersList[x]).isReviewed());
@@ -296,13 +302,15 @@ public class MainMenuGUI extends JFrame {
   	ObjectOutputStream out = null;
   	public void actionPerformed(ActionEvent buttonClick) 
   	{
+  		String paperName = (String)JOptionPane.showInputDialog(MainMenuGUI.this, "Please type in the title of your paper\n", 
+  				"Paper Organizer", JOptionPane.PLAIN_MESSAGE);
   		JFileChooser choosePaper = new JFileChooser();
   		int status = choosePaper.showOpenDialog(MainMenuGUI.this);
   		if (status != JFileChooser.CANCEL_OPTION)
   		{
 
   	  		File Paper = new File(choosePaper.getSelectedFile().getPath());
-	  		currentConference.assignPaper(username, new Paper(Paper.getName(), Paper.getPath()), role);
+	  		currentConference.assignPaper(username, new Paper(paperName, Paper.getPath()), role);
 	  		try
 	  		{
 	  			fos = new FileOutputStream(conferenceFilename);

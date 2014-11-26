@@ -52,7 +52,7 @@ public class Conference implements Serializable{
 	 * @param theDeadline The submission deadline for papers for this conference.
 	 */
 	public Conference(final String theTitle, final String thePCUsername, final GregorianCalendar theDeadline) {
-		title = theTitle;
+		title = theTitle.substring(0, 1).toUpperCase() + theTitle.substring(1);
 		PCusername = thePCUsername;
 		Spcs = new HashMap<String, Collection<Paper>>();
 		Reviewers = new HashMap<String, Collection<Paper>>();
@@ -73,9 +73,9 @@ public class Conference implements Serializable{
 			temp = Authors.get(theUsername);
 		} else if (theRole == "Reviewer") {
 			temp = Reviewers.get(theUsername);
-		} else if (theRole == "Spc") {
+		} else if (theRole == "SubProgram Chair") {
 			temp = Spcs.get(theUsername);
-		} else if (theRole == "PC") {
+		} else if (theRole == "Program Chair") {
 			temp = new ArrayList<Paper>();
 			for (String s : Authors.keySet()) {
 				Collection<Paper> authorTemp = Authors.get(s);
