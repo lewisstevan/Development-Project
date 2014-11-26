@@ -165,16 +165,16 @@ public class MainMenuReviewerGUI extends JFrame {
         setLayout(layout);
         
         conferencelbl.setText(this.currentConference.getConferenceTitle());
-        deadlineLabel.setText("Deadline:");
+        deadlineLabel.setText("      Deadline:");
         deadlinelbl.setText(df.format(currentConference.getDeadline().getTime()));
         namelbl.setText(username);
         changeRoleBtn.setText(role);
         status.setText("Status");
         Paper.setText("Paper Title");
-        titleLabel.setText("Role:");
+        titleLabel.setText("              Role:");
         reviewLabel.setText("Reviews");
         conferenceLabel.setText("Conference:");
-        nameLabel.setText("Name:");
+        nameLabel.setText("           Name:");
         uploadPaperBtn.setText("Upload Paper");
         exitBtn.setText("Exit");
         
@@ -184,8 +184,8 @@ public class MainMenuReviewerGUI extends JFrame {
         uploadPaperBtn.addActionListener(new submitPaperButtonListener());
         
         //Content pane 1 setup
-        contentPane1.setPreferredSize(new Dimension(default_size.width/2, default_size.height/4-25));
-        contentPane1.setLayout(new GridLayout(4,2,0,1));
+        contentPane1.setPreferredSize(new Dimension(default_size.width/2-50, default_size.height/4-25));
+        contentPane1.setLayout(new GridLayout(4,2,-100,1));
         
         //Content pane 2 setup
         contentPane2.setPreferredSize(new Dimension(default_size.width-25, (default_size.height/2-25+(default_size.height/4-25)/2)));
