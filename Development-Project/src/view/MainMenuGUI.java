@@ -41,7 +41,7 @@ public class MainMenuGUI extends JFrame {
 	contentPane7, contentPane8, contentPane9, conferenceNamePane;
     private JLabel conferenceLabel, titleLabel, deadlineLabel, deadlinelbl, conferencelbl, namelbl,
     nameLabel, paperNamelbl, paperStatuslbl, reviewLabel, spcScoreLabel;
-    private JButton changeRoleBtn, uploadPaperBtn;
+    private JButton changeRoleBtn, uploadPaperBtn,unsubmitPaperBtn;
     private JScrollPane scrollPanel;
     private Conference currentConference;
     private String username, conferenceFilename, role, conferenceName;
@@ -66,6 +66,7 @@ public class MainMenuGUI extends JFrame {
         reviewLabel = new JLabel();     
         uploadPaperBtn = new JButton();
         changeRoleBtn = new JButton();
+        unsubmitPaperBtn = new JButton();
         this.role = role;
         conferenceFilename = currentConference.toLowerCase() + ".ser";
         scrollSizeMultiplier = 0;     
@@ -153,11 +154,13 @@ public class MainMenuGUI extends JFrame {
         conferenceLabel.setText("Conference:");
         nameLabel.setText("           Name:");
         uploadPaperBtn.setText("Upload Paper");
+        unsubmitPaperBtn.setText("Unsubmit Paper");
         spcScoreLabel.setText("S.P.C. Score");
         
         //attach listeners
         changeRoleBtn.addActionListener(new changeRoleButtonListener(this));
         uploadPaperBtn.addActionListener(new submitPaperButtonListener());
+        unsubmitPaperBtn.addActionListener(new unSubmitPaperButtonListener());
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -277,7 +280,9 @@ public class MainMenuGUI extends JFrame {
     public void addUniqueButtons()
     {
     	uploadPaperBtn.setPreferredSize(STANDARD_BUTTON_SIZE);
+    	unsubmitPaperBtn.setPreferredSize(STANDARD_BUTTON_SIZE);
         contentPane3.add(uploadPaperBtn);
+        contentPane3.add(unsubmitPaperBtn);
         contentPane3.repaint();
     }
     
@@ -297,13 +302,47 @@ public class MainMenuGUI extends JFrame {
 
   }
   
+  	private class unSubmitPaperButtonListener implements ActionListener {
+	  
+  		Object[] possibilities;
+  		FileOutputStream fos = null;
+  	  	ObjectOutputStream out = null;
+  		
+	  @Override
+	  public void actionPerformed(ActionEvent arg0) {
+		possibilities = MainMenuGUI.this.currentConference.getPapers(username, role).toArray();
+		for(int x = 0;x < scrollSizeMultiplier; x++)
+		{
+			possibilities[x] = ((Paper)possibilities[x]).getTitle();
+		}
+		String removeThisOne = (String)JOptionPane.showInputDialog(MainMenuGUI.this, "Choose a paper to remove",
+				"Conference Organizer",JOptionPane.PLAIN_MESSAGE,null,possibilities,possibilities[0]);
+		MainMenuGUI.this.currentConference.removePaper(username, removeThisOne);
+		
+		try
+  		{
+  			fos = new FileOutputStream(conferenceFilename);
+  			out = new ObjectOutputStream(fos);
+  			out.writeObject(currentConference);
+  			out.close();
+  		} 
+  		catch (Exception ex)
+  		{
+  			ex.printStackTrace();
+  		}
+  		MainMenuGUI.this.dispose();
+  		new MainMenuGUI(conferenceName, username, role);
+	  }
+	  
+  }
+  
   private class submitPaperButtonListener implements ActionListener {
   	FileOutputStream fos = null;
   	ObjectOutputStream out = null;
   	public void actionPerformed(ActionEvent buttonClick) 
   	{
   		String paperName = (String)JOptionPane.showInputDialog(MainMenuGUI.this, "Please type in the title of your paper\n", 
-  				"Paper Organizer", JOptionPane.PLAIN_MESSAGE);
+  				"Conference Organizer", JOptionPane.PLAIN_MESSAGE);
   		JFileChooser choosePaper = new JFileChooser();
   		int status = choosePaper.showOpenDialog(MainMenuGUI.this);
   		if (status != JFileChooser.CANCEL_OPTION)

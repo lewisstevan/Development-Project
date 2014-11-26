@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 //import java.util.Set;
 import java.util.TreeSet;
@@ -167,10 +168,21 @@ public class Conference implements Serializable{
 	 * @param username The authors username.
 	 * @param paper the paper the author wants to submit.
 	 */
-	public void removePaper(String username, Paper paper) {
+	public void removePaper(String username, String paperName) {
 		Collection<Paper> temp = Authors.get(username);
-		if (temp != null && temp.contains(paper)) {
-			temp.remove(paper);
+		if (temp != null) 
+		{
+			Iterator<Paper> itr = temp.iterator();
+			boolean found = false;
+			while (itr.hasNext() && found == false)
+			{
+				Paper currentPaper = itr.next();
+				if (currentPaper.getTitle().equalsIgnoreCase(paperName))
+				{
+					temp.remove(currentPaper);
+					found = true;
+				}
+			}
 		}
 	}
 	
