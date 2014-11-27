@@ -146,14 +146,13 @@ public class MainMenuGUI extends JFrame {
 		FlowLayout layout = new FlowLayout(10,10,10);
         setLayout(layout);
         
-        //set the text and font of various labels
+        //setup components
         conferencelbl.setFont(conferencelbl.getFont().deriveFont(20.0f));
         conferencelbl.setText(this.currentConference.getConferenceTitle());
         deadlineLabel.setText("      Deadline:");
         deadlinelbl.setText(df.format(currentConference.getDeadline().getTime()));
         backBtn.setText("Back");
         backBtn.setPreferredSize(STANDARD_BUTTON_SIZE);
-        backBtn.addActionListener(new backButtonListener());
         namelbl.setText(username.substring(0, 1).toUpperCase() + username.substring(1).toLowerCase());
         changeRoleField.addItem("           Author");
         changeRoleField.addItem("           Reviewer");
@@ -172,6 +171,7 @@ public class MainMenuGUI extends JFrame {
         spcScoreLabel.setText("S.P.C. Score");
         
         //attach listeners
+        backBtn.addActionListener(new backButtonListener());
         uploadPaperBtn.addActionListener(new submitPaperButtonListener());
         unsubmitPaperBtn.addActionListener(new unSubmitPaperButtonListener());
         this.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -193,6 +193,7 @@ public class MainMenuGUI extends JFrame {
         		System.exit(0);	
         	}
         });   
+        
         //conference pane setup
         conferenceNamePane.setPreferredSize(new Dimension(DEFAULT_SIZE.width -25, DEFAULT_SIZE.height/23));
         conferenceNamePane.setLayout(new FlowLayout(FlowLayout.LEFT));
