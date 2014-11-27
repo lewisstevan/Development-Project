@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.List;
@@ -65,6 +66,7 @@ public class StartingGUI extends JFrame
         
         //setup conference field
         conferenceField.setPreferredSize(new Dimension(DEFAULT_SIZE.width/2, 30));
+        conferenceField.setBackground(Color.white);
         File folder = new File(System.getProperty("user.dir"));
         File[] listOfFiles = folder.listFiles();
         for (int i = 0; i < listOfFiles.length; i++)
