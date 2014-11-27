@@ -1,18 +1,21 @@
 package view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
+import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class StartingGUI extends JFrame
 {
@@ -23,7 +26,7 @@ public class StartingGUI extends JFrame
 	private JLabel usernameLabel;
 	private JLabel conferenceLabel;
 	private JTextField usernameField;
-	private JTextField conferenceField;
+	private JComboBox<String> conferenceField;
 	private JButton okButton;
 	private JButton exitButton;
 	
@@ -33,9 +36,9 @@ public class StartingGUI extends JFrame
 		contentPane1 = new JPanel();
 		contentPane2 = new JPanel();
 		usernameLabel = new JLabel();
-		conferenceLabel = new JLabel();
 		usernameField = new JTextField();
-		conferenceField = new JTextField();
+		conferenceField = new JComboBox<String>();
+		conferenceLabel = new JLabel();
 		spaceFiller = new JPanel();
 		okButton = new JButton();
 		exitButton = new JButton();
@@ -60,7 +63,22 @@ public class StartingGUI extends JFrame
         
         usernameField.setPreferredSize(new Dimension(DEFAULT_SIZE.width/2, 30));
         
+        //setup conference field
         conferenceField.setPreferredSize(new Dimension(DEFAULT_SIZE.width/2, 30));
+        File folder = new File(System.getProperty("user.dir"));
+        File[] listOfFiles = folder.listFiles();
+        for (int i = 0; i < listOfFiles.length; i++)
+        {
+        	if (listOfFiles[i].isFile())
+        	{
+        		if (listOfFiles[i].getName().substring(listOfFiles[i].getName().length() - 4).equalsIgnoreCase(".ser"))
+        		{
+        			conferenceField.addItem(listOfFiles[i].getName().substring(0, listOfFiles[i].getName().length() - 4));
+        		}
+        	}
+        }
+        conferenceField.addItem("Create a new conference");
+        
         
         //setup exitButton
         exitButton.setText("Exit");
@@ -117,8 +135,15 @@ public class StartingGUI extends JFrame
 		}
     	public void actionPerformed(ActionEvent buttonClick) 
     	{
-    		new MainMenuGUI(conferenceField.getText(), usernameField.getText(), "Author");	
-    		window.dispose();
+    		if (usernameField.getText().isEmpty())
+    		{
+    			JOptionPane.showMessageDialog(StartingGUI.this, "Please enter a username");
+    		}
+    		else
+    		{
+	    		new MainMenuGUI((String)conferenceField.getSelectedItem(), usernameField.getText(), "Author");	
+	    		window.dispose();
+    		}
     	}
 
     }

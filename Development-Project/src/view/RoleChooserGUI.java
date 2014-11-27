@@ -34,7 +34,7 @@ public class RoleChooserGUI extends JFrame
 		contentPane1 = new JPanel();
 		contentPane2 = new JPanel();
 		chooseRoleLabel = new JLabel();
-		chooseRole = new JComboBox();
+		chooseRole = new JComboBox<String>();
 		currentWindow = this;
 		loadElements();
 	}
