@@ -1,11 +1,14 @@
 
 package view;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -14,6 +17,7 @@ import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -41,7 +45,8 @@ public class MainMenuGUI extends JFrame {
 	contentPane7, contentPane8, contentPane9, conferenceNamePane;
     private JLabel conferenceLabel, titleLabel, deadlineLabel, deadlinelbl, conferencelbl, namelbl,
     nameLabel, paperNamelbl, paperStatuslbl, reviewLabel, spcScoreLabel;
-    private JButton changeRoleBtn, uploadPaperBtn,unsubmitPaperBtn;
+    private JButton uploadPaperBtn,unsubmitPaperBtn, backBtn;
+    private JComboBox<String> changeRoleField;
     private JScrollPane scrollPanel;
     private Conference currentConference;
     private String username, conferenceFilename, role, conferenceName;
@@ -65,7 +70,8 @@ public class MainMenuGUI extends JFrame {
         paperNamelbl = new JLabel();
         reviewLabel = new JLabel();     
         uploadPaperBtn = new JButton();
-        changeRoleBtn = new JButton();
+        backBtn = new JButton();
+        changeRoleField = new JComboBox<String>();
         unsubmitPaperBtn = new JButton();
         this.role = role;
         conferenceFilename = currentConference.toLowerCase() + ".ser";
@@ -145,8 +151,16 @@ public class MainMenuGUI extends JFrame {
         conferencelbl.setText(this.currentConference.getConferenceTitle());
         deadlineLabel.setText("      Deadline:");
         deadlinelbl.setText(df.format(currentConference.getDeadline().getTime()));
+        backBtn.setText("Back");
+        backBtn.setPreferredSize(STANDARD_BUTTON_SIZE);
+        backBtn.addActionListener(new backButtonListener());
         namelbl.setText(username.substring(0, 1).toUpperCase() + username.substring(1).toLowerCase());
-        changeRoleBtn.setText(role);
+        changeRoleField.addItem("           Author");
+        changeRoleField.addItem("           Reviewer");
+        changeRoleField.addItem("           SubProgram Chair");
+        changeRoleField.addItem("           Program Chair");
+        changeRoleField.setSelectedItem("           " + role);
+        changeRoleField.addItemListener(new changeRoleFieldListener());
         paperStatuslbl.setText("Status");
         paperNamelbl.setText("Paper Title");
         titleLabel.setText("              Role:");
@@ -158,7 +172,6 @@ public class MainMenuGUI extends JFrame {
         spcScoreLabel.setText("S.P.C. Score");
         
         //attach listeners
-        changeRoleBtn.addActionListener(new changeRoleButtonListener(this));
         uploadPaperBtn.addActionListener(new submitPaperButtonListener());
         unsubmitPaperBtn.addActionListener(new unSubmitPaperButtonListener());
         this.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -240,7 +253,7 @@ public class MainMenuGUI extends JFrame {
         contentPane1.add(namelbl);
 
         contentPane1.add(titleLabel);
-        contentPane1.add(changeRoleBtn);
+        contentPane1.add(changeRoleField);
         contentPane1.add(deadlineLabel);
         contentPane1.add(deadlinelbl);
         add(contentPane1);
@@ -270,6 +283,7 @@ public class MainMenuGUI extends JFrame {
         contentPane7.add(contentPane9);
         contentPane7.add(contentPane8);
         contentPane2.add(scrollPanel);
+        contentPane3.add(backBtn);
         add(contentPane2);
         add(contentPane3);
         
@@ -292,18 +306,30 @@ public class MainMenuGUI extends JFrame {
     }
     
 
-  private class changeRoleButtonListener implements ActionListener {
-  
-	  JFrame window;
-	  public changeRoleButtonListener(JFrame window)
-	  {
-		  this.window = window;
-	  }
-	  
-  	public void actionPerformed(ActionEvent buttonClick) 
-  	{
-  		new RoleChooserGUI(conferenceName,username, window);
-  	}
+  private class changeRoleFieldListener implements ItemListener {
+
+	@Override
+	public void itemStateChanged(ItemEvent arg0) {
+		if (changeRoleField.getSelectedItem() == "           Author")
+  		{
+  			new MainMenuGUI(conferenceName, MainMenuGUI.this.username, "Author");	
+  		}
+  		
+  		else if (changeRoleField.getSelectedItem() == "           Reviewer")
+  		{
+  			new MainMenuReviewerGUI(conferenceName, MainMenuGUI.this.username);
+  		}
+  		
+  		else if (changeRoleField.getSelectedItem() == "           SubProgram Chair")
+  		{
+  			new MainMenuSPCGUI(conferenceName, MainMenuGUI.this.username);
+  		}
+  		
+  		else if (changeRoleField.getSelectedItem() == "           Program Chair")
+  		{
+  			new MainMenuPCGUI(conferenceName, MainMenuGUI.this.username);
+  		}		
+	}
 
   }
   
@@ -340,6 +366,29 @@ public class MainMenuGUI extends JFrame {
 	  }
 	  
   }
+  	
+  	private class backButtonListener implements ActionListener {
+  		FileOutputStream fos = null;
+  	  	ObjectOutputStream out = null;
+  		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try
+	  		{
+	  			fos = new FileOutputStream(conferenceFilename);
+	  			out = new ObjectOutputStream(fos);
+	  			out.writeObject(currentConference);
+	  			out.close();
+	  		} 
+	  		catch (Exception ex)
+	  		{
+	  			ex.printStackTrace();
+	  		}			
+
+	  		MainMenuGUI.this.dispose();
+	  		new StartingGUI();
+		}
+  	}
   
   private class submitPaperButtonListener implements ActionListener {
   	FileOutputStream fos = null;
