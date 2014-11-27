@@ -166,19 +166,16 @@ public class Conference implements Serializable{
 	/**
 	 * Allows an author to unsubmit their paper.
 	 * @param username The authors username.
-	 * @param paper the paper the author wants to submit.
+	 * @param paper the paper the author wants to remove.
 	 */
 	public void removePaper(String username, String paperName) {
 		Collection<Paper> temp = Authors.get(username);
-		if (temp != null) 
-		{
+		if (temp != null) {
 			Iterator<Paper> itr = temp.iterator();
 			boolean found = false;
-			while (itr.hasNext() && found == false)
-			{
+			while (itr.hasNext() && found == false) {
 				Paper currentPaper = itr.next();
-				if (currentPaper.getTitle().equalsIgnoreCase(paperName))
-				{
+				if (currentPaper.getTitle().equalsIgnoreCase(paperName)) {
 					temp.remove(currentPaper);
 					found = true;
 				}
@@ -211,14 +208,8 @@ public class Conference implements Serializable{
 		return title;
 	}
 	
-	public boolean beforeDue()
-	{
-		boolean result = true;
-		if (new GregorianCalendar().after(this.deadline))
-		{
-			result = false;
-		}
-		return result;
+	public boolean beforeDue() {
+		return !(new GregorianCalendar().after(this.deadline));
 	}
 	
 	public String toString() {

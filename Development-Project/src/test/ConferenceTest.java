@@ -20,7 +20,7 @@ import org.junit.Test;
 public class ConferenceTest {
 
 	Conference test;
-	Paper dummyPaper = new Paper(null, null);
+	Paper dummyPaper = new Paper("dummy paper", null);
 	
 	/**
 	 * @throws java.lang.Exception
@@ -39,7 +39,7 @@ public class ConferenceTest {
 		//Tests assignPaper and getPaper when the user is already assigned to the specified role.
 		test.assignRole("Bob", "Spc");
 		test.assignPaper("Bob", dummyPaper, "Spc");
-		assertTrue(test.getPapers("Bob", "Spc").contains(dummyPaper));
+		assertTrue(test.getPapers("Bob", "SubProgram Chair").contains(dummyPaper));
 		
 		//Tests that a user will not get access to a paper for a different role.
 		assertEquals(test.getPapers("Bob", "Author"), null);
@@ -56,18 +56,24 @@ public class ConferenceTest {
 		assertTrue(dummyPaper.isAssignedToSPC());
 		
 		//Tests the functionality of getPapers for the PC (should return all papers in the conference.)
-		Paper dummy2 = new Paper(null, null);
+		Paper dummy2 = new Paper("dummy2", null);
 		test.assignPaper("George", dummy2, "Author");
-		Paper dummy3 = new Paper(null, null);
+		Paper dummy3 = new Paper("dummy3", null);
 		test.assignPaper("Steve", dummy3, "Author");
-		assertTrue(test.getPapers("Steven Speilberg", "PC").contains(dummyPaper));
-		assertTrue(test.getPapers("Steven Speilberg", "PC").contains(dummy2));
-		assertTrue(test.getPapers("Steven Speilberg", "PC").contains(dummy3));
+		assertTrue(test.getPapers("Steven Speilberg", "Program Chair").contains(dummyPaper));
+		assertTrue(test.getPapers("Steven Speilberg", "Program Chair").contains(dummy2));
+		assertTrue(test.getPapers("Steven Speilberg", "Program Chair").contains(dummy3));
 		
 		//Tests the remove paper method.
 		test.assignPaper("Steve", dummy2, "Author");
-		test.removePaper("Steve", dummy2);
+		test.removePaper("Steve", dummy2.getTitle());
 		assertFalse(test.getPapers("Steve", "Author").contains(dummy2));
+		assertTrue(test.getPapers("Steve", "Author").contains(dummy3));
+		
+		//Tests the before due method.
+		Conference testDL = new Conference("DLtest", "Steven Speilberg", new GregorianCalendar(2012, 10, 31));
+		assertFalse(testDL.beforeDue());
+		assertTrue(test.beforeDue());
 	}
 
 	/**
