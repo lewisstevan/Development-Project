@@ -29,11 +29,13 @@ public class AreYouSureGUI extends JFrame
 	JPanel contentPane1;
 	JPanel contentPane2;
 	JPanel contentPane3;
+	JPanel contentPane4;
 	JButton Continue;
 	JButton Cancel;
-	JTextField deadlineField;
+	JTextField deadlineField, nameNewConferenceField;
 	JLabel deadlineLabel;
 	JLabel Message;
+	JLabel nameNewConference;
 	public AreYouSureGUI(String username, String conferenceName)
 	{
 		window = this;
@@ -42,14 +44,16 @@ public class AreYouSureGUI extends JFrame
 		contentPane1 = new JPanel();
 		contentPane2 = new JPanel();
 		contentPane3 = new JPanel();
+		contentPane4 = new JPanel();
 
 				
 		deadlineField = new JTextField();
+		nameNewConferenceField = new JTextField();
 		Continue = new JButton();
 		Cancel = new JButton();
 		Message = new JLabel();
 		deadlineLabel = new JLabel();
-		
+		nameNewConference = new JLabel();
 		
 		createElements();
 	}
@@ -62,7 +66,7 @@ public class AreYouSureGUI extends JFrame
 		setVisible(true);
 		FlowLayout layout = new FlowLayout();
         setLayout(layout);
-		setPreferredSize(new Dimension(600, 200));
+		setPreferredSize(new Dimension(700, 250));
 		
 		
 		
@@ -89,11 +93,16 @@ public class AreYouSureGUI extends JFrame
 		contentPane2.add(Continue);
 		
 		//contentPane3
-		contentPane3.setPreferredSize(new Dimension(600, 40));
+		contentPane3.setPreferredSize(new Dimension(700, 80));
+		nameNewConference.setPreferredSize(new Dimension(350, 30));
+		nameNewConference.setText("Please type your conference's name:");
+		nameNewConferenceField.setPreferredSize(new Dimension(200, 30));
 		deadlineLabel.setText("Please choose your conference's deadline (dd/mm/yyyy):");
-		deadlineLabel.setPreferredSize(new Dimension(300, 30));
+		deadlineLabel.setPreferredSize(new Dimension(350, 30));
 		deadlineField.setPreferredSize(new Dimension(200, 30));
 		deadlineField.setText("//");
+		contentPane3.add(nameNewConference);
+		contentPane3.add(nameNewConferenceField);
 		contentPane3.add(deadlineLabel);
 		contentPane3.add(deadlineField);
 		

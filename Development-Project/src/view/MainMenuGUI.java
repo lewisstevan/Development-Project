@@ -392,6 +392,7 @@ public class MainMenuGUI extends JFrame {
   	}
   
   private class submitPaperButtonListener implements ActionListener {
+	  boolean wasEmpty = false;
   	FileOutputStream fos = null;
   	ObjectOutputStream out = null;
   	public void actionPerformed(ActionEvent buttonClick) 
@@ -407,27 +408,44 @@ public class MainMenuGUI extends JFrame {
   		{
 	  		String paperName = (String)JOptionPane.showInputDialog(MainMenuGUI.this, "Please type in the title of your paper\n", 
 	  				"Conference Organizer", JOptionPane.PLAIN_MESSAGE);
-	  		JFileChooser choosePaper = new JFileChooser();
-	  		int status = choosePaper.showOpenDialog(MainMenuGUI.this);
-	  		if (status != JFileChooser.CANCEL_OPTION)
+	  		try
 	  		{
-	
-	  	  		File Paper = new File(choosePaper.getSelectedFile().getPath());
-		  		currentConference.assignPaper(username, new Paper(paperName, Paper.getPath()), role);
-		  		try
+		  		if (paperName.isEmpty())
 		  		{
-		  			fos = new FileOutputStream(conferenceFilename);
-		  			out = new ObjectOutputStream(fos);
-		  			out.writeObject(currentConference);
-		  			out.close();
-		  		} 
-		  		catch (Exception ex)
-		  		{
-		  			ex.printStackTrace();
+		  			JOptionPane.showMessageDialog(MainMenuGUI.this, "Please enter a name for your paper");
+		  			wasEmpty = true;
+		  			uploadPaperBtn.doClick();
 		  		}
-		  		MainMenuGUI.this.dispose();
-		  		new MainMenuGUI(conferenceName, username, role);
+		  		else
+		  		{
+			  		JFileChooser choosePaper = new JFileChooser();
+			  		int status = choosePaper.showOpenDialog(MainMenuGUI.this);
+			  		if (status != JFileChooser.CANCEL_OPTION || wasEmpty)
+			  		{
+			
+			  	  		File Paper = new File(choosePaper.getSelectedFile().getPath());
+				  		currentConference.assignPaper(username, new Paper(paperName, Paper.getPath()), role);
+				  		try
+				  		{
+				  			fos = new FileOutputStream(conferenceFilename);
+				  			out = new ObjectOutputStream(fos);
+				  			out.writeObject(currentConference);
+				  			out.close();
+				  		} 
+				  		catch (Exception ex)
+				  		{
+				  			ex.printStackTrace();
+				  		}
+				  		MainMenuGUI.this.dispose();
+				  		new MainMenuGUI(conferenceName, username, role);
+			  		}
+		  		}
 	  		}
+	  		catch (NullPointerException ex)
+	  		{
+	  			
+	  		}
+	  		
   		}
   	}
 
