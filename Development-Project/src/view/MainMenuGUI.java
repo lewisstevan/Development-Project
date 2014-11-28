@@ -41,14 +41,21 @@ public class MainMenuGUI extends JFrame {
 	public static int SECONDS_IN_A_DAY = 24 * 60 * 60;
 	private static final long serialVersionUID = 1L;
 	private Dimension DEFAULT_SIZE = new Dimension(600,600);
-	private JPanel contentPane1, contentPane2, contentPane3, contentPane4, contentPane5, contentPane6,
-	contentPane7, contentPane8, contentPane9, conferenceNamePane;
+	private JPanel contentPane1, contentPane2;
+	protected JPanel contentPane3;
+	private JPanel contentPane4;
+	private JPanel contentPane5;
+	private JPanel contentPane6;
+	private JPanel contentPane7;
+	private JPanel contentPane8;
+	private JPanel contentPane9;
+	private JPanel conferenceNamePane;
     private JLabel conferenceLabel, titleLabel, deadlineLabel, deadlinelbl, conferencelbl, namelbl,
     nameLabel, paperNamelbl, paperStatuslbl, reviewLabel, spcScoreLabel;
     private JButton uploadPaperBtn,unsubmitPaperBtn, backBtn;
     private JComboBox<String> changeRoleField;
     private JScrollPane scrollPanel;
-    private Conference currentConference;
+    protected Conference currentConference;
     private String username, conferenceFilename, role, conferenceName;
     
     /**
