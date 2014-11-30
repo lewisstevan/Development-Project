@@ -148,18 +148,27 @@ public class AreYouSureGUI extends JFrame
 	    			{
 	    				try 
 	    				{
-	    					conferenceName = nameNewConferenceField.getText();
-	    					String conferencefilename = conferenceName + ".ser";
-	    					year = Integer.parseInt("" + Input[6] + Input[7] + Input[8] + Input[9]);
-	    					month = Integer.parseInt("" + Input[3] + Input[4]);
-	    					day = Integer.parseInt("" + Input[0] + Input[1]);
-	    					fos = new FileOutputStream(conferencefilename);
-	    	    			out = new ObjectOutputStream(fos);
-	    	    			deadline.set(year, month, day);
-	    	    			out.writeObject(new Conference(conferenceName.toLowerCase(), username, deadline));
-	    	    			out.close();
-	    	    			new MainMenuGUI(conferenceName, username, "Program Chair");
-	    	        		window.dispose();
+	    					if (nameNewConferenceField.getText().isEmpty())
+	    	    			{
+	    	    				JOptionPane.showMessageDialog(window, "Please type a name for this conference");
+	    	    				new AreYouSureGUI(username, conferenceName);
+	    	    				window.dispose();
+	    	    			}
+	    					else
+	    					{
+		    					conferenceName = nameNewConferenceField.getText();
+		    					String conferencefilename = conferenceName + ".ser";
+		    					year = Integer.parseInt("" + Input[6] + Input[7] + Input[8] + Input[9]);
+		    					month = Integer.parseInt("" + Input[3] + Input[4]);
+		    					day = Integer.parseInt("" + Input[0] + Input[1]);
+		    					fos = new FileOutputStream(conferencefilename);
+		    	    			out = new ObjectOutputStream(fos);
+		    	    			deadline.set(year, month, day);
+		    	    			out.writeObject(new Conference(conferenceName.toLowerCase(), username, deadline));
+		    	    			out.close();
+		    	    			new MainMenuGUI(conferenceName, username, "Program Chair");
+		    	        		window.dispose();
+	    					}
 	    				}
 	    				catch(NumberFormatException e)
 	    				{
@@ -174,6 +183,7 @@ public class AreYouSureGUI extends JFrame
     				new AreYouSureGUI(username, conferenceName);
     				window.dispose();
     			}
+    			
     			
     		} 
     		catch (Exception ex)
