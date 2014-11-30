@@ -6,23 +6,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
-import java.text.NumberFormat;
 import java.util.GregorianCalendar;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.text.NumberFormatter;
-
 import model.Conference;
 
 public class AreYouSureGUI extends JFrame
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4294414103050247616L;
 	JFrame window;
 	String conferenceName;
 	String username;
@@ -36,6 +35,7 @@ public class AreYouSureGUI extends JFrame
 	JLabel deadlineLabel;
 	JLabel Message;
 	JLabel nameNewConference;
+	
 	public AreYouSureGUI(String username, String conferenceName)
 	{
 		window = this;
@@ -138,36 +138,36 @@ public class AreYouSureGUI extends JFrame
     			char[] Input = deadlineField.getText().toCharArray();
     			try
     			{
-    			if (Input.length != 10 || ("" + Input[2]).compareTo("/") != 0 || ("" + Input[5]).compareTo("/") != 0 )
-    			{
-    				JOptionPane.showMessageDialog(window, "Please type the date in the specified format(mm/dd/yyyy)");
-    				new AreYouSureGUI(username, conferenceName);
-    				window.dispose();
-    			}
-    			else
-    			{
-    				try 
-    				{
-    					conferenceName = nameNewConferenceField.getText();
-    					String conferencefilename = conferenceName + ".ser";
-    					year = Integer.parseInt("" + Input[6] + Input[7] + Input[8] + Input[9]);
-    					month = Integer.parseInt("" + Input[3] + Input[4]);
-    					day = Integer.parseInt("" + Input[0] + Input[1]);
-    					fos = new FileOutputStream(conferencefilename);
-    	    			out = new ObjectOutputStream(fos);
-    	    			deadline.set(year, month, day);
-    	    			out.writeObject(new Conference(conferenceName.toLowerCase(), username, deadline));
-    	    			out.close();
-    	    			new MainMenuGUI(conferenceName, username, "Program Chair");
-    	        		window.dispose();
-    				}
-    				catch(NumberFormatException e)
-    				{
-    					JOptionPane.showMessageDialog(window, "Please type numbers into the field");
-    					new AreYouSureGUI(username, conferenceName);
-    					window.dispose();
-    				}
-    			}
+	    			if (Input.length != 10 || ("" + Input[2]).compareTo("/") != 0 || ("" + Input[5]).compareTo("/") != 0 )
+	    			{
+	    				JOptionPane.showMessageDialog(window, "Please type the date in the specified format(mm/dd/yyyy)");
+	    				new AreYouSureGUI(username, conferenceName);
+	    				window.dispose();
+	    			}
+	    			else
+	    			{
+	    				try 
+	    				{
+	    					conferenceName = nameNewConferenceField.getText();
+	    					String conferencefilename = conferenceName + ".ser";
+	    					year = Integer.parseInt("" + Input[6] + Input[7] + Input[8] + Input[9]);
+	    					month = Integer.parseInt("" + Input[3] + Input[4]);
+	    					day = Integer.parseInt("" + Input[0] + Input[1]);
+	    					fos = new FileOutputStream(conferencefilename);
+	    	    			out = new ObjectOutputStream(fos);
+	    	    			deadline.set(year, month, day);
+	    	    			out.writeObject(new Conference(conferenceName.toLowerCase(), username, deadline));
+	    	    			out.close();
+	    	    			new MainMenuGUI(conferenceName, username, "Program Chair");
+	    	        		window.dispose();
+	    				}
+	    				catch(NumberFormatException e)
+	    				{
+	    					JOptionPane.showMessageDialog(window, "Please type numbers into the field");
+	    					new AreYouSureGUI(username, conferenceName);
+	    					window.dispose();
+	    				}
+	    			}
     			}
     			catch (NullPointerException e)
     			{
@@ -179,9 +179,7 @@ public class AreYouSureGUI extends JFrame
     		catch (Exception ex)
     		{
     			ex.printStackTrace();
-    		}
-    		
+    		}	
     	}
-
     }
 }

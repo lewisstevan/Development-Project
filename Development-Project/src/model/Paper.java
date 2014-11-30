@@ -19,6 +19,11 @@ import java.util.Map;
 public class Paper implements Serializable{
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7721497510495346947L;
+
+	/**
 	 * the Title of the paper
 	 */
     private String myTitle;
