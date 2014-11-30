@@ -125,7 +125,6 @@ public class AreYouSureGUI extends JFrame
 	
 	private class continueButtonListener implements ActionListener {
 		GregorianCalendar deadline = new GregorianCalendar();
-		String conferencefilename = conferenceName + ".ser";
 		FileOutputStream fos = null;
     	ObjectOutputStream out = null;
 
@@ -149,6 +148,8 @@ public class AreYouSureGUI extends JFrame
     			{
     				try 
     				{
+    					conferenceName = nameNewConferenceField.getText();
+    					String conferencefilename = conferenceName + ".ser";
     					year = Integer.parseInt("" + Input[6] + Input[7] + Input[8] + Input[9]);
     					month = Integer.parseInt("" + Input[3] + Input[4]);
     					day = Integer.parseInt("" + Input[0] + Input[1]);
@@ -157,7 +158,7 @@ public class AreYouSureGUI extends JFrame
     	    			deadline.set(year, month, day);
     	    			out.writeObject(new Conference(conferenceName.toLowerCase(), username, deadline));
     	    			out.close();
-    	    			new MainMenuPCGUI(conferenceName, username);
+    	    			new MainMenuGUI(conferenceName, username, "Program Chair");
     	        		window.dispose();
     				}
     				catch(NumberFormatException e)

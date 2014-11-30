@@ -1,7 +1,6 @@
 
 package view;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -292,6 +291,36 @@ public class MainMenuGUI extends JFrame {
         setLocationRelativeTo(null);
     }
     
+    private class changeRoleFieldListener implements ItemListener {
+
+    	@Override
+    	public void itemStateChanged(ItemEvent arg0) {
+
+    		if (changeRoleField.getSelectedItem() == "           Author")
+      		{
+      			new MainMenuGUI(conferenceName, MainMenuGUI.this.username, "Author");	
+      		}
+      		
+      		else if (changeRoleField.getSelectedItem() == "           Reviewer")
+      		{
+      			new MainMenuGUI(conferenceName, MainMenuGUI.this.username, "Reviewer");
+      		}
+      		
+      		else if (changeRoleField.getSelectedItem() == "           SubProgram Chair")
+      		{
+      			new MainMenuGUI(conferenceName, MainMenuGUI.this.username,"SubProgram Chair");
+      		}
+      		
+      		else if (changeRoleField.getSelectedItem() == "           Program Chair")
+      		{
+      			new MainMenuGUI(conferenceName, MainMenuGUI.this.username, "Program Chair");
+      		}		
+
+    		MainMenuGUI.this.dispose();
+    	}
+
+      }
+    
     public void addUniqueButtons()
     {
     	uploadPaperBtn.setPreferredSize(STANDARD_BUTTON_SIZE);
@@ -307,32 +336,7 @@ public class MainMenuGUI extends JFrame {
     }
     
 
-  private class changeRoleFieldListener implements ItemListener {
-
-	@Override
-	public void itemStateChanged(ItemEvent arg0) {
-		if (changeRoleField.getSelectedItem() == "           Author")
-  		{
-  			new MainMenuGUI(conferenceName, MainMenuGUI.this.username, "Author");	
-  		}
-  		
-  		else if (changeRoleField.getSelectedItem() == "           Reviewer")
-  		{
-  			new MainMenuReviewerGUI(conferenceName, MainMenuGUI.this.username);
-  		}
-  		
-  		else if (changeRoleField.getSelectedItem() == "           SubProgram Chair")
-  		{
-  			new MainMenuSPCGUI(conferenceName, MainMenuGUI.this.username);
-  		}
-  		
-  		else if (changeRoleField.getSelectedItem() == "           Program Chair")
-  		{
-  			new MainMenuPCGUI(conferenceName, MainMenuGUI.this.username);
-  		}		
-	}
-
-  }
+  
   
   	private class unSubmitPaperButtonListener implements ActionListener {
 	  
