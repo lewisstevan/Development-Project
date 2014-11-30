@@ -1,6 +1,8 @@
 
 package view;
 
+import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -8,9 +10,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
@@ -279,6 +285,7 @@ public class MainMenuGUI extends JFrame {
         	paperStatus.setText(((Paper)papersList[x]).getStatus());   	
         	paperTitles.setText(((Paper)papersList[x]).getTitle()); 	
         	paperReviews.setText(((Paper)papersList[x]).isReviewed());
+        	paperTitles.addMouseListener(new openLabelListener(paperTitles));
         	contentPane9.add(paperTitles);
         	contentPane8.add(paperScore);
         	contentPane8.add(paperReviews);
@@ -536,4 +543,45 @@ public class MainMenuGUI extends JFrame {
 	  }
 	  
   }
+	
+	private class openLabelListener implements MouseListener {
+		JLabel myLabel;
+		public openLabelListener(JLabel theLabel)
+		{
+			this.myLabel = theLabel;
+		}
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			Paper currentPaper = MainMenuGUI.this.currentConference.getPaper(username, role, myLabel.getText());
+					File f = new File(currentPaper.getFilePath());
+					try {
+						Desktop.getDesktop().open(f);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+			
+		}
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			myLabel.setForeground(Color.BLUE);
+			myLabel.repaint();			
+		}
+		@Override
+		public void mouseExited(MouseEvent e) {
+			myLabel.setForeground(Color.BLACK);
+			myLabel.repaint();
+		}
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
 }

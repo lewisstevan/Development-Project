@@ -90,6 +90,22 @@ public class Conference implements Serializable{
 
 		return temp;
 	}
+	
+	public Paper getPaper(final String theUsername, final String theRole, final String thePaperName)
+	{
+Collection<Paper> temp = getPapers(theUsername, theRole);
+Paper currentPaper = null;
+		Iterator<Paper> itr = temp.iterator();
+		while (itr.hasNext())
+		{
+			Paper thisPaper = itr.next();
+			if (thisPaper.getTitle() == thePaperName)
+			{
+				 currentPaper = thisPaper;
+			}
+		}
+		return currentPaper;
+	}
 
 	/**
 	 * Gets the number of papers assigned to the specified user for the specified role.
