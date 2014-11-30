@@ -168,8 +168,8 @@ public class Conference implements Serializable{
 	 * @param username The authors username.
 	 * @param paper the paper the author wants to remove.
 	 */
-	public void removePaper(String username, String paperName) {
-		Collection<Paper> temp = Authors.get(username);
+	public void removePaper(String username, String paperName, String role) {
+		Collection<Paper> temp = getPapers(username, role);
 		if (temp != null) {
 			Iterator<Paper> itr = temp.iterator();
 			boolean found = false;

@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -33,7 +34,8 @@ import model.Paper;
  */
 public class MainMenuGUI extends JFrame {
 	
-	private Dimension STANDARD_BUTTON_SIZE = new Dimension(150,50);;
+	boolean guiCreated = false;
+	private Dimension STANDARD_BUTTON_SIZE = new Dimension(125,50);;
 	Object[] papersList;
 	int scrollSizeMultiplier;
 	SimpleDateFormat df;
@@ -47,13 +49,15 @@ public class MainMenuGUI extends JFrame {
     private JButton uploadPaperBtn,unsubmitPaperBtn, backBtn;
     private JComboBox<String> changeRoleField;
     private JScrollPane scrollPanel;
-    private Conference currentConference;
+    protected Conference currentConference;
     private String username, conferenceFilename, role, conferenceName;
+    private JButton submitReviewBTN;
     
     /**
      * Creates new form MainMenuGUI
      */
     public MainMenuGUI(String currentConference, String username, String role) {
+    	submitReviewBTN = new JButton();
     	this.conferenceName = currentConference;
     	df = new SimpleDateFormat();
     	df.applyPattern("dd/MM/yyyy");
@@ -173,6 +177,7 @@ public class MainMenuGUI extends JFrame {
         backBtn.addActionListener(new backButtonListener());
         uploadPaperBtn.addActionListener(new submitPaperButtonListener());
         unsubmitPaperBtn.addActionListener(new unSubmitPaperButtonListener());
+      	submitReviewBTN.addActionListener(new submitReviewListener());
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -296,30 +301,35 @@ public class MainMenuGUI extends JFrame {
     	@Override
     	public void itemStateChanged(ItemEvent arg0) {
 
-    		if (changeRoleField.getSelectedItem() == "           Author")
+    		if (changeRoleField.getSelectedItem() == "           Author" && guiCreated == false)
       		{
-      			new MainMenuGUI(conferenceName, MainMenuGUI.this.username, "Author");	
+      			new MainMenuGUI(conferenceName, MainMenuGUI.this.username, "Author");
+      			guiCreated = true;
       		}
       		
-      		else if (changeRoleField.getSelectedItem() == "           Reviewer")
+      		else if (changeRoleField.getSelectedItem() == "           Reviewer" && guiCreated == false)
       		{
       			new MainMenuGUI(conferenceName, MainMenuGUI.this.username, "Reviewer");
+      			guiCreated = true;
       		}
       		
-      		else if (changeRoleField.getSelectedItem() == "           SubProgram Chair")
+      		else if (changeRoleField.getSelectedItem() == "           SubProgram Chair" && guiCreated == false)
       		{
       			new MainMenuGUI(conferenceName, MainMenuGUI.this.username,"SubProgram Chair");
+      			guiCreated = true;
       		}
       		
-      		else if (changeRoleField.getSelectedItem() == "           Program Chair")
+      		else if (changeRoleField.getSelectedItem() == "           Program Chair" && guiCreated == false)
       		{
       			new MainMenuGUI(conferenceName, MainMenuGUI.this.username, "Program Chair");
+      			guiCreated = true;
       		}		
 
     		MainMenuGUI.this.dispose();
     	}
 
       }
+    
     
     public void addUniqueButtons()
     {
@@ -333,44 +343,21 @@ public class MainMenuGUI extends JFrame {
         contentPane3.add(uploadPaperBtn);
         contentPane3.add(unsubmitPaperBtn);
         contentPane3.repaint();
+        
+        if (role == "Reviewer")
+        {
+	        submitReviewBTN.setPreferredSize(STANDARD_BUTTON_SIZE);
+	      	submitReviewBTN.setText("Submit Review");
+	      	
+	      	contentPane3.add(submitReviewBTN);
+	      	contentPane3.repaint();
+        }
     }
     
 
   
   
-  	private class unSubmitPaperButtonListener implements ActionListener {
-	  
-  		Object[] possibilities;
-  		FileOutputStream fos = null;
-  	  	ObjectOutputStream out = null;
-  		
-	  @Override
-	  public void actionPerformed(ActionEvent arg0) {
-		possibilities = MainMenuGUI.this.currentConference.getPapers(username, role).toArray();
-		for(int x = 0;x < scrollSizeMultiplier; x++)
-		{
-			possibilities[x] = ((Paper)possibilities[x]).getTitle();
-		}
-		String removeThisOne = (String)JOptionPane.showInputDialog(MainMenuGUI.this, "Choose a paper to remove",
-				"Conference Organizer",JOptionPane.PLAIN_MESSAGE,null,possibilities,possibilities[0]);
-		MainMenuGUI.this.currentConference.removePaper(username, removeThisOne);
-		
-		try
-  		{
-  			fos = new FileOutputStream(conferenceFilename);
-  			out = new ObjectOutputStream(fos);
-  			out.writeObject(currentConference);
-  			out.close();
-  		} 
-  		catch (Exception ex)
-  		{
-  			ex.printStackTrace();
-  		}
-  		MainMenuGUI.this.dispose();
-  		new MainMenuGUI(conferenceName, username, role);
-	  }
-	  
-  }
+  
   	
   	private class backButtonListener implements ActionListener {
   		FileOutputStream fos = null;
@@ -453,5 +440,100 @@ public class MainMenuGUI extends JFrame {
   		}
   	}
 
+  }
+  
+  
+  private class submitReviewListener implements ActionListener {
+  	Collection<Paper> papers;
+  	
+  	@Override
+	  	public void actionPerformed(ActionEvent arg0) {
+  		papers = MainMenuGUI.this.currentConference.getPapers(username, "Reviewer");
+  		//user has papers to review
+  		try
+  		{
+	  		if (papers != null) {
+	  			Object[] possibilities = papers.toArray();
+	  			Paper submitTo = null;
+	      		submitTo = (Paper)JOptionPane.showInputDialog(MainMenuGUI.this, "Choose a paper to review",
+	      				"Conference Organizer",JOptionPane.PLAIN_MESSAGE,null,possibilities,possibilities[0]);
+	      		//user selected a paper (did not hit cancel)
+	      		if (submitTo != null) {
+		        		JFileChooser choosePaper = new JFileChooser();
+		        		choosePaper.setDialogTitle("Select your review");
+		        		int status = choosePaper.showOpenDialog(MainMenuGUI.this);
+		        		//user selects a file (did not hit cancel)
+		    	  		if (status != JFileChooser.CANCEL_OPTION) {
+		    	  			File review = new File(choosePaper.getSelectedFile().getPath());
+		            		submitTo.assignReview(username, review.getPath());
+		    	  		}
+		    	  		
+		    	  		//redraw GUI
+		    	  		String conferenceFilename = conferenceName.toLowerCase() + ".ser";
+				  		try
+				  		{
+				  			FileOutputStream fos = new FileOutputStream(conferenceFilename);
+				  			ObjectOutputStream out = new ObjectOutputStream(fos);
+				  			out.writeObject(currentConference);
+				  			out.close();
+				  		} 
+				  		catch (Exception ex)
+				  		{
+				  			ex.printStackTrace();
+				  		}
+				  		MainMenuGUI.this.dispose();
+				  		new MainMenuGUI(conferenceName, username, "Reviewer");
+	      		}
+	
+	  		}
+  		}
+  		catch (Exception e)
+  		{
+  			JOptionPane.showMessageDialog(MainMenuGUI.this, "There are no Papers submitted to review");
+  		}
+  		
+
+  	}
+  }	
+  
+	private class unSubmitPaperButtonListener implements ActionListener {
+		  
+  		Object[] possibilities;
+  		FileOutputStream fos = null;
+  	  	ObjectOutputStream out = null;
+  		
+	  @Override
+	  public void actionPerformed(ActionEvent arg0) {
+		  try
+		  {
+		possibilities = MainMenuGUI.this.currentConference.getPapers(username, role).toArray();
+		for(int x = 0;x < scrollSizeMultiplier; x++)
+		{
+			possibilities[x] = ((Paper)possibilities[x]).getTitle();
+		}
+		String removeThisOne = (String)JOptionPane.showInputDialog(MainMenuGUI.this, "Choose a paper to remove",
+				"Conference Organizer",JOptionPane.PLAIN_MESSAGE,null,possibilities,possibilities[0]);
+		MainMenuGUI.this.currentConference.removePaper(username, removeThisOne, role);
+		
+		try
+  		{
+  			fos = new FileOutputStream(conferenceFilename);
+  			out = new ObjectOutputStream(fos);
+  			out.writeObject(currentConference);
+  			out.close();
+  		} 
+  		catch (Exception ex)
+  		{
+  			ex.printStackTrace();
+  		}
+  		MainMenuGUI.this.dispose();
+  		new MainMenuGUI(conferenceName, username, role);
+		  }
+		  catch (Exception e)
+		  {
+	  			JOptionPane.showMessageDialog(MainMenuGUI.this, "There are no Papers submitted to un-submit");
+		  }
+	  }
+	  
   }
 }
