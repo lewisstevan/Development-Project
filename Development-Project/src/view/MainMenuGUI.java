@@ -511,8 +511,13 @@ public class MainMenuGUI extends JFrame {
 				  		MainMenuGUI.this.dispose();
 				  		new MainMenuGUI(conferenceName, username, "Reviewer");
 	      		}
+	      		
 	
 	  		}
+	  		else
+      		{
+      			JOptionPane.showMessageDialog(MainMenuGUI.this, "There are no Papers submitted to review");
+      		}
   		}
   		catch (Exception e)
   		{
