@@ -91,10 +91,17 @@ public class Conference implements Serializable{
 		return temp;
 	}
 	
+	/**
+	 * Retrieves one specific paper from a user
+	 * @param theUsername the name of the person who is assigned this paper.
+	 * @param theRole the role of the person who is assigned this paper.
+	 * @param thePaperName the name of the paper.
+	 * @return currentPaper the paper that is being searched for. 
+	 */
 	public Paper getPaper(final String theUsername, final String theRole, final String thePaperName)
 	{
-Collection<Paper> temp = getPapers(theUsername, theRole);
-Paper currentPaper = null;
+		Collection<Paper> temp = getPapers(theUsername, theRole);
+		Paper currentPaper = null;
 		Iterator<Paper> itr = temp.iterator();
 		while (itr.hasNext())
 		{
@@ -105,6 +112,28 @@ Paper currentPaper = null;
 			}
 		}
 		return currentPaper;
+	}
+	
+	public boolean authenticate(final String theUsername, final String theRole)
+	{
+		boolean result = false;
+		if (theRole == "           Author")
+		{
+			result = true;
+		}
+		else if (theRole == "           Reviewer")
+		{
+			result = Reviewers.keySet().contains(theUsername.toLowerCase());
+		}
+		else if (theRole == "          SubProgram Chair")
+		{
+			result = Spcs.keySet().contains(theUsername.toLowerCase());
+		}
+		if (theUsername.equalsIgnoreCase(PCusername))
+		{
+			result = true;
+		}
+		return result;
 	}
 
 	/**

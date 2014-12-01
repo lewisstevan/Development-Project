@@ -164,7 +164,7 @@ public class AreYouSureGUI extends JFrame
 		    					fos = new FileOutputStream(conferencefilename);
 		    	    			out = new ObjectOutputStream(fos);
 		    	    			deadline.set(year, month, day);
-		    	    			out.writeObject(new Conference(conferenceName.toLowerCase(), username, deadline));
+		    	    			out.writeObject(new Conference(conferenceName.toLowerCase(), username.toLowerCase(), deadline));
 		    	    			out.close();
 		    	    			new MainMenuGUI(conferenceName, username, "Program Chair");
 		    	        		window.dispose();

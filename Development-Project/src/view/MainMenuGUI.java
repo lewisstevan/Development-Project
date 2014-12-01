@@ -322,31 +322,42 @@ public class MainMenuGUI extends JFrame {
     	@Override
     	public void itemStateChanged(ItemEvent arg0) {
 
-    		if (changeRoleField.getSelectedItem() == "           Author" && guiCreated == false)
-      		{
-      			new MainMenuGUI(conferenceName, MainMenuGUI.this.username, "Author");
-      			guiCreated = true;
-      		}
-      		
-      		else if (changeRoleField.getSelectedItem() == "           Reviewer" && guiCreated == false)
-      		{
-      			new MainMenuGUI(conferenceName, MainMenuGUI.this.username, "Reviewer");
-      			guiCreated = true;
-      		}
-      		
-      		else if (changeRoleField.getSelectedItem() == "           SubProgram Chair" && guiCreated == false)
-      		{
-      			new MainMenuGUI(conferenceName, MainMenuGUI.this.username,"SubProgram Chair");
-      			guiCreated = true;
-      		}
-      		
-      		else if (changeRoleField.getSelectedItem() == "           Program Chair" && guiCreated == false)
-      		{
-      			new MainMenuGUI(conferenceName, MainMenuGUI.this.username, "Program Chair");
-      			guiCreated = true;
-      		}		
-
-    		MainMenuGUI.this.dispose();
+    		if (guiCreated == false)
+    		{
+    			
+				if (MainMenuGUI.this.currentConference.authenticate(MainMenuGUI.this.username, (String)changeRoleField.getSelectedItem()))
+				{
+		    		if (changeRoleField.getSelectedItem() == "           Author" && guiCreated == false)
+		      		{
+		      			new MainMenuGUI(conferenceName, MainMenuGUI.this.username, "Author");
+		      		}
+		      		
+		      		else if (changeRoleField.getSelectedItem() == "           Reviewer" && guiCreated == false)
+		      		{
+		      			new MainMenuGUI(conferenceName, MainMenuGUI.this.username, "Reviewer");
+		      		}
+		      		
+		      		else if (changeRoleField.getSelectedItem() == "           SubProgram Chair" && guiCreated == false)
+		      		{
+		      			new MainMenuGUI(conferenceName, MainMenuGUI.this.username,"SubProgram Chair");
+		      		}
+		      		
+		      		else if (changeRoleField.getSelectedItem() == "           Program Chair" && guiCreated == false)
+		      		{
+		      			new MainMenuGUI(conferenceName, MainMenuGUI.this.username, "Program Chair");
+		      		}		
+		
+		    		MainMenuGUI.this.dispose();
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(MainMenuGUI.this, "You are not authorized to view this role");
+					new MainMenuGUI(conferenceName, MainMenuGUI.this.username, role);
+					MainMenuGUI.this.dispose();
+				}
+				guiCreated = true;
+    		}
+    	
     	}
 
       }
