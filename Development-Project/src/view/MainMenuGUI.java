@@ -643,20 +643,23 @@ public class MainMenuGUI extends JFrame {
 			}
 			String acceptOrRejectThisOne = (String)JOptionPane.showInputDialog(MainMenuGUI.this, "Choose a paper to accept or reject",
 					"Conference Organizer",JOptionPane.PLAIN_MESSAGE,null,possibilities,possibilities[0]);
-			Paper acceptOrRejectThisOnePaper = MainMenuGUI.this.currentConference.getPaper(username, "Program Chair", acceptOrRejectThisOne);
-			
-			int reply = JOptionPane.showConfirmDialog(MainMenuGUI.this, "Would you like to accept " + acceptOrRejectThisOne + "?", "Accept or Reject", JOptionPane.YES_NO_CANCEL_OPTION);
-			if (reply == JOptionPane.YES_OPTION)
+			if (acceptOrRejectThisOne != null)
 			{
-				acceptOrRejectThisOnePaper.updateStatus(true);
-			}
-			else if (reply == JOptionPane.NO_OPTION)
-			{
-				acceptOrRejectThisOnePaper.updateStatus(false);
-			}
-			else if (reply == JOptionPane.CANCEL_OPTION)
-			{
+				Paper acceptOrRejectThisOnePaper = MainMenuGUI.this.currentConference.getPaper(username, "Program Chair", acceptOrRejectThisOne);
 				
+				int reply = JOptionPane.showConfirmDialog(MainMenuGUI.this, "Would you like to accept " + acceptOrRejectThisOne + "?", "Accept or Reject", JOptionPane.YES_NO_CANCEL_OPTION);
+				if (reply == JOptionPane.YES_OPTION)
+				{
+					acceptOrRejectThisOnePaper.updateStatus(true);
+				}
+				else if (reply == JOptionPane.NO_OPTION)
+				{
+					acceptOrRejectThisOnePaper.updateStatus(false);
+				}
+				else if (reply == JOptionPane.CANCEL_OPTION)
+				{
+					
+				}
 			}
 			try
 	  		{
@@ -671,11 +674,13 @@ public class MainMenuGUI extends JFrame {
 	  		}
 	  		MainMenuGUI.this.dispose();
 	  		new MainMenuGUI(conferenceName, username, role);
-			  }
-			  catch (Exception e)
-			  {
-		  			JOptionPane.showMessageDialog(MainMenuGUI.this, "There are no Papers submitted to accept or reject");
-			  }		}
+			}
+			catch (Exception e)
+			{
+				JOptionPane.showMessageDialog(MainMenuGUI.this, "There are no Papers submitted to accept or reject");
+			}		
+			  
+		}
 		
 	}
 }
