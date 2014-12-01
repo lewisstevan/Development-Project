@@ -39,6 +39,10 @@ public class Paper implements Serializable{
     private Map<String, String> myReviews;
 	
     /**
+     * a map of reviewers to their respective summary review ratings.
+     */
+    private Map<String, Integer> myReviewRatings;
+    /**
      * the file path for the paper's recommendation
      */
     private String myRecommendation;
@@ -70,7 +74,7 @@ public class Paper implements Serializable{
      */
 	public Paper(String theTitle, String theFilePath) {
 		this(theTitle, theFilePath, new HashMap<String, String>(), null,
-			false, false, -1);
+			false, false, -1, new HashMap<String, Integer>());
 	}
 	
 	/**
@@ -84,12 +88,13 @@ public class Paper implements Serializable{
 	 * @param theRating the rating given to the paper by the SPC
 	 * @param theIsAccepted whether the paper is accepted by the PC
 	 */
-	public Paper(String theTitle, String theFilePath, Map<String, String> theReviews,
+	public Paper(String theTitle, String theFilePath, Map<String, String> theReviews, 
 				String theRecommendation, boolean theAssignedtoSPC, boolean theIsRecommended,
-				int theRating) {
+				int theRating, Map<String, Integer> theReviewRatings) {
 		myTitle = theTitle;
 		myFilePath = theFilePath;
 		myReviews = theReviews;
+		myReviewRatings = theReviewRatings;
 		myRecommendation = theRecommendation;
 		myAssignedToSPC = theAssignedtoSPC;
 		myIsRecommended = theIsRecommended;
@@ -177,6 +182,17 @@ public class Paper implements Serializable{
 	public void assignReview(String theReviewer, String theFilePath) {
 		if(theReviewer != null) {
 			myReviews.put(theReviewer, theFilePath);
+		}
+	}
+	
+	/**
+	 * Method to store the summary rating of a reviewer.
+	 * @param theReviewer The reviewer who is submitting the score.
+	 * @param theRating The rating the reviewer gave this paper.
+	 */
+	public void assignReviewRating(String theReviewer, Integer theRating) {
+		if(theReviewer != null) {
+			myReviewRatings.put(theReviewer, theRating);
 		}
 	}
 

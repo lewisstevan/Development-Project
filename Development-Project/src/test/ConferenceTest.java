@@ -66,7 +66,7 @@ public class ConferenceTest {
 		
 		//Tests the remove paper method.
 		test.assignPaper("Steve", dummy2, "Author");
-		test.removePaper("Steve", dummy2.getTitle());
+		test.removePaper("Steve", dummy2.getTitle(), "Author");
 		assertFalse(test.getPapers("Steve", "Author").contains(dummy2));
 		assertTrue(test.getPapers("Steve", "Author").contains(dummy3));
 		

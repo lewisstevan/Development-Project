@@ -483,21 +483,41 @@ public class MainMenuGUI extends JFrame {
   }
   
   private class submitReviewListener implements ActionListener {
-  	Collection<Paper> papers;
-  	
-  	@Override
-	  	public void actionPerformed(ActionEvent arg0) {
-  		papers = MainMenuGUI.this.currentConference.getPapers(username, "Reviewer");
-  		//user has papers to review
-  		try
-  		{
-	  		if (papers != null) {
-	  			Object[] possibilities = papers.toArray();
-	  			Paper submitTo = null;
-	      		submitTo = (Paper)JOptionPane.showInputDialog(MainMenuGUI.this, "Choose a paper to review",
-	      				"Conference Organizer",JOptionPane.PLAIN_MESSAGE,null,possibilities,possibilities[0]);
-	      		//user selected a paper (did not hit cancel)
-	      		if (submitTo != null) {
+	  	Collection<Paper> papers;
+	  	
+	  	@Override
+		  	public void actionPerformed(ActionEvent arg0) {
+	  		papers = MainMenuGUI.this.currentConference.getPapers(username, "Reviewer");
+	  		//user has papers to review
+	  		try
+	  		{
+		  		if (papers != null) {
+		  			Object[] possibilities = papers.toArray();
+		  			Paper submitTo = null;
+		      		submitTo = (Paper)JOptionPane.showInputDialog(MainMenuGUI.this, "Choose a paper to review",
+		      				"Conference Organizer",JOptionPane.PLAIN_MESSAGE,null,possibilities,possibilities[0]);
+		      		//user selected a paper (did not hit cancel)
+		      		if (submitTo != null) {
+		      			Integer summaryRating = 0;
+		      			//requires a user to input their summary rating before they continue
+	  					try {
+	  						summaryRating = Integer.valueOf((String)JOptionPane.showInputDialog(MainMenuGUI.this, 
+	  								"Please input your summary rating\n", "Conference Organizer", JOptionPane.PLAIN_MESSAGE));
+	  					} catch (NumberFormatException nfe) {
+	  						summaryRating = Integer.valueOf((String)JOptionPane.showInputDialog(MainMenuGUI.this, 
+	  							"Summary rating must be an integer between 1 and 5,\nPlease input your summary rating\n", 
+	  									"Conference Organizer", JOptionPane.PLAIN_MESSAGE));
+	  					}
+	      				while (summaryRating < 1 || summaryRating > 5) {
+	      					try {
+	      						summaryRating = Integer.valueOf((String)JOptionPane.showInputDialog(MainMenuGUI.this, 
+	      								"Summary rating must be an integer between 1 and 5,\nPlease input your summary rating\n", "Conference Organizer", JOptionPane.PLAIN_MESSAGE));
+	      					} catch (NumberFormatException nfe) {
+	      						summaryRating = Integer.valueOf((String)JOptionPane.showInputDialog(MainMenuGUI.this, 
+	      							"Summary rating must be an integer between 1 and 5,\nPlease input your summary rating\n", 
+	      									"Conference Organizer", JOptionPane.PLAIN_MESSAGE));
+	      					}
+	      				}
 		        		JFileChooser choosePaper = new JFileChooser();
 		        		choosePaper.setDialogTitle("Select your review");
 		        		int status = choosePaper.showOpenDialog(MainMenuGUI.this);
@@ -505,6 +525,7 @@ public class MainMenuGUI extends JFrame {
 		    	  		if (status != JFileChooser.CANCEL_OPTION) {
 		    	  			File review = new File(choosePaper.getSelectedFile().getPath());
 		            		submitTo.assignReview(username, review.getPath());
+		            		submitTo.assignReviewRating(username, summaryRating);
 		    	  		}
 		    	  		
 		    	  		//redraw GUI
@@ -522,23 +543,23 @@ public class MainMenuGUI extends JFrame {
 				  		}
 				  		MainMenuGUI.this.dispose();
 				  		new MainMenuGUI(conferenceName, username, "Reviewer");
+		      		}
+		      		
+		
+		  		}
+		  		else
+	      		{
+	      			JOptionPane.showMessageDialog(MainMenuGUI.this, "There are no Papers submitted to review");
 	      		}
-	      		
-	
 	  		}
-	  		else
-      		{
-      			JOptionPane.showMessageDialog(MainMenuGUI.this, "There are no Papers submitted to review");
-      		}
-  		}
-  		catch (Exception e)
-  		{
-  			JOptionPane.showMessageDialog(MainMenuGUI.this, "There are no Papers submitted to review");
-  		}
-  		
+	  		catch (Exception e)
+	  		{
+	  			JOptionPane.showMessageDialog(MainMenuGUI.this, "There are no Papers submitted to review");
+	  		}
+	  		
 
-  	}
-  }	
+	  	}
+	  }	
   
 	private class unSubmitPaperButtonListener implements ActionListener {
 		  
