@@ -63,15 +63,15 @@ public class MainMenuGUI extends JFrame {
 	contentPane7, contentPane8, contentPane9, conferenceNamePane;
     private JLabel conferenceLabel, titleLabel, deadlineLabel, deadlinelbl, conferencelbl, namelbl,
     nameLabel, paperNamelbl, paperStatuslbl, reviewLabel, spcScoreLabel;
-    private JButton uploadPaperBtn,unsubmitPaperBtn, backBtn;
+    private JButton uploadPaperBtn,unsubmitPaperBtn, backBtn, submitReviewBTN, decideStatusBtn;
     private JComboBox<String> changeRoleField;
     private JScrollPane scrollPanel;
     protected Conference currentConference;
     private String username, conferenceFilename, role, conferenceName;
-    private JButton submitReviewBTN;
     
     
     public MainMenuGUI(String currentConference, String username, String role) {
+    	decideStatusBtn = new JButton();
     	submitReviewBTN = new JButton();
     	this.conferenceName = currentConference;
     	df = new SimpleDateFormat();
@@ -194,6 +194,7 @@ public class MainMenuGUI extends JFrame {
         uploadPaperBtn.addActionListener(new submitPaperButtonListener());
         unsubmitPaperBtn.addActionListener(new unSubmitPaperButtonListener());
       	submitReviewBTN.addActionListener(new submitReviewListener());
+      	decideStatusBtn.addActionListener(new changeStatusBtnListener());
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -368,16 +369,19 @@ public class MainMenuGUI extends JFrame {
      */
     public void addUniqueButtons()
     {
-    	uploadPaperBtn.setPreferredSize(STANDARD_BUTTON_SIZE);
-    	uploadPaperBtn.setEnabled(MainMenuGUI.this.currentConference.beforeDue());
-    	if (!uploadPaperBtn.isEnabled())
+    	if (role == "Author")
     	{
-    		uploadPaperBtn.setToolTipText("It is past this conferences deadline");
+	    	uploadPaperBtn.setPreferredSize(STANDARD_BUTTON_SIZE);
+	    	uploadPaperBtn.setEnabled(MainMenuGUI.this.currentConference.beforeDue());
+	    	if (!uploadPaperBtn.isEnabled())
+	    	{
+	    		uploadPaperBtn.setToolTipText("It is past this conferences deadline");
+	    	}
+	    	unsubmitPaperBtn.setPreferredSize(STANDARD_BUTTON_SIZE);
+	        contentPane3.add(uploadPaperBtn);
+	        contentPane3.add(unsubmitPaperBtn);
+	        contentPane3.repaint();
     	}
-    	unsubmitPaperBtn.setPreferredSize(STANDARD_BUTTON_SIZE);
-        contentPane3.add(uploadPaperBtn);
-        contentPane3.add(unsubmitPaperBtn);
-        contentPane3.repaint();
         
         if (role == "Reviewer")
         {
@@ -386,6 +390,14 @@ public class MainMenuGUI extends JFrame {
 	      	
 	      	contentPane3.add(submitReviewBTN);
 	      	contentPane3.repaint();
+        }
+        
+        if (role == "Program Chair")
+        {
+        	decideStatusBtn.setPreferredSize(new Dimension(STANDARD_BUTTON_SIZE.width + 50, STANDARD_BUTTON_SIZE.height));
+        	decideStatusBtn.setText("Accept or Reject a Paper");
+        	contentPane3.add(decideStatusBtn);
+        	contentPane3.repaint();
         }
     }
    
@@ -611,5 +623,59 @@ public class MainMenuGUI extends JFrame {
 			// TODO Auto-generated method stub
 			
 		}
+	}
+	
+	private class changeStatusBtnListener implements ActionListener 
+	{
+		
+		Object[] possibilities;
+  		FileOutputStream fos = null;
+  	  	ObjectOutputStream out = null;
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			try
+			  {
+			possibilities = MainMenuGUI.this.currentConference.getPapers(username, role).toArray();
+			for(int x = 0;x < scrollSizeMultiplier; x++)
+			{
+				possibilities[x] = ((Paper)possibilities[x]).getTitle();
+			}
+			String acceptOrRejectThisOne = (String)JOptionPane.showInputDialog(MainMenuGUI.this, "Choose a paper to accept or reject",
+					"Conference Organizer",JOptionPane.PLAIN_MESSAGE,null,possibilities,possibilities[0]);
+			Paper acceptOrRejectThisOnePaper = MainMenuGUI.this.currentConference.getPaper(username, "Program Chair", acceptOrRejectThisOne);
+			
+			int reply = JOptionPane.showConfirmDialog(MainMenuGUI.this, "Would you like to accept " + acceptOrRejectThisOne + "?", "Accept or Reject", JOptionPane.YES_NO_CANCEL_OPTION);
+			if (reply == JOptionPane.YES_OPTION)
+			{
+				acceptOrRejectThisOnePaper.updateStatus(true);
+			}
+			else if (reply == JOptionPane.NO_OPTION)
+			{
+				acceptOrRejectThisOnePaper.updateStatus(false);
+			}
+			else if (reply == JOptionPane.CANCEL_OPTION)
+			{
+				
+			}
+			try
+	  		{
+	  			fos = new FileOutputStream(conferenceFilename);
+	  			out = new ObjectOutputStream(fos);
+	  			out.writeObject(currentConference);
+	  			out.close();
+	  		} 
+	  		catch (Exception ex)
+	  		{
+	  			ex.printStackTrace();
+	  		}
+	  		MainMenuGUI.this.dispose();
+	  		new MainMenuGUI(conferenceName, username, role);
+			  }
+			  catch (Exception e)
+			  {
+		  			JOptionPane.showMessageDialog(MainMenuGUI.this, "There are no Papers submitted to accept or reject");
+			  }		}
+		
 	}
 }
