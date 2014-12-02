@@ -162,14 +162,11 @@ public class Paper implements Serializable{
 	 * this method will allow the PC to set the status of a paper based on his or her decision.
 	 * @param theDecision -1 if rejected, 0 if undecided or 1 if accepted.
 	 */
-	public void updateStatus(Boolean accepted) {
-		if (accepted == true)
-		{
+	public void updateStatus(boolean accepted) {
+		if (accepted == true) {
 			myAccepted = "Accepted";
 		}
-		
-		else if (accepted == false)
-		{
+		else if (accepted == false) {
 			myAccepted = "Rejected";
 		}
 	}
@@ -234,6 +231,9 @@ public class Paper implements Serializable{
 		return myReviews.get(theReviewer);
 	}
 	
+	public Collection<Integer> getReviewRating() {
+		return myReviewRatings.values();
+	}
 	
 	/**
 	 * @return the myRecommendation
@@ -245,13 +245,8 @@ public class Paper implements Serializable{
 	/**
 	 * @return the rating given to this paper
 	 */
-	public String getRating(){
-		String result = "Undecided";
-		if (myRating > -1 && myRating < 11)
-		{
-			result = Integer.toString(myRating);
-		}
-		return result;
+	public int getRating(){
+		return myRating;
 	}
 	
 	/**
