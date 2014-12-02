@@ -63,7 +63,7 @@ public class MainMenuGUI extends JFrame {
 	contentPane7, contentPane8, contentPane9, conferenceNamePane;
     private JLabel conferenceLabel, titleLabel, deadlineLabel, deadlinelbl, conferencelbl, namelbl,
     nameLabel, paperNamelbl, paperStatuslbl, reviewLabel, spcScoreLabel;
-    private JButton uploadPaperBtn,unsubmitPaperBtn, backBtn, submitReviewBTN, decideStatusBtn;
+    private JButton uploadPaperBtn,unsubmitPaperBtn, backBtn, submitReviewBTN, decideStatusBtn, assignReviewerBtn, uploadRecommendationBtn;
     private JComboBox<String> changeRoleField;
     private JScrollPane scrollPanel;
     protected Conference currentConference;
@@ -88,6 +88,8 @@ public class MainMenuGUI extends JFrame {
         paperNamelbl = new JLabel();
         reviewLabel = new JLabel();     
         uploadPaperBtn = new JButton();
+        assignReviewerBtn = new JButton();
+        uploadRecommendationBtn = new JButton();
         backBtn = new JButton();
         changeRoleField = new JComboBox<String>();
         unsubmitPaperBtn = new JButton();
@@ -195,6 +197,8 @@ public class MainMenuGUI extends JFrame {
         unsubmitPaperBtn.addActionListener(new unSubmitPaperButtonListener());
       	submitReviewBTN.addActionListener(new submitReviewListener());
       	decideStatusBtn.addActionListener(new changeStatusBtnListener());
+      	assignReviewerBtn.addActionListener(new assignReviewerListener());
+      	uploadRecommendationBtn.addActionListener(new uploadRecommendationListener());
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -397,6 +401,17 @@ public class MainMenuGUI extends JFrame {
         	decideStatusBtn.setPreferredSize(new Dimension(STANDARD_BUTTON_SIZE.width + 50, STANDARD_BUTTON_SIZE.height));
         	decideStatusBtn.setText("Accept or Reject a Paper");
         	contentPane3.add(decideStatusBtn);
+        	contentPane3.repaint();
+        }
+        
+        if (role == "SubProgram Chair") {
+        	assignReviewerBtn.setPreferredSize(new Dimension(STANDARD_BUTTON_SIZE.width + 50, STANDARD_BUTTON_SIZE.height));
+        	assignReviewerBtn.setText("Assign a Reviewer");
+        	uploadRecommendationBtn.setPreferredSize(new Dimension(STANDARD_BUTTON_SIZE.width + 75, STANDARD_BUTTON_SIZE.height));
+        	uploadRecommendationBtn.setText("Upload Recommendation");
+        	contentPane3.add(backBtn);
+        	contentPane3.add(assignReviewerBtn);
+        	contentPane3.add(uploadRecommendationBtn);
         	contentPane3.repaint();
         }
     }
@@ -700,9 +715,94 @@ public class MainMenuGUI extends JFrame {
 			catch (Exception e)
 			{
 				JOptionPane.showMessageDialog(MainMenuGUI.this, "There are no Papers submitted to accept or reject");
-			}		
-			  
+			}			
+		}	
+	}
+	private class assignReviewerListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			// TODO Auto-generated method stub
+			
 		}
 		
 	}
+	private class uploadRecommendationListener implements ActionListener {
+	  	Collection<Paper> papers;
+	  	
+	  	@Override
+		  	public void actionPerformed(ActionEvent arg0) {
+	  		papers = MainMenuGUI.this.currentConference.getPapers(username, "SubProgram Chair");
+	  		//user has papers to review
+	  		try
+	  		{
+		  		if (papers != null) {
+		  			Object[] possibilities = papers.toArray();
+		  			Paper submitTo = null;
+		      		submitTo = (Paper)JOptionPane.showInputDialog(MainMenuGUI.this, "Choose a paper to recommend",
+		      				"Conference Organizer",JOptionPane.PLAIN_MESSAGE,null,possibilities,possibilities[0]);
+		      		//user selected a paper (did not hit cancel)
+		      		if (submitTo != null) {
+		      			Integer summaryRating = 0;
+		      			//requires a user to input their summary rating before they continue
+	  					try {
+	  						summaryRating = Integer.valueOf((String)JOptionPane.showInputDialog(MainMenuGUI.this, 
+	  								"Please input your summary rating\n", "Conference Organizer", JOptionPane.PLAIN_MESSAGE));
+	  					} catch (NumberFormatException nfe) {
+	  						summaryRating = Integer.valueOf((String)JOptionPane.showInputDialog(MainMenuGUI.this, 
+	  							"Summary rating must be an integer between 1 and 5,\nPlease input your summary rating\n", 
+	  									"Conference Organizer", JOptionPane.PLAIN_MESSAGE));
+	  					}
+	      				while (summaryRating < 1 || summaryRating > 5) {
+	      					try {
+	      						summaryRating = Integer.valueOf((String)JOptionPane.showInputDialog(MainMenuGUI.this, 
+	      								"Summary rating must be an integer between 1 and 5,\nPlease input your summary rating\n", "Conference Organizer", JOptionPane.PLAIN_MESSAGE));
+	      					} catch (NumberFormatException nfe) {
+	      						summaryRating = Integer.valueOf((String)JOptionPane.showInputDialog(MainMenuGUI.this, 
+	      							"Summary rating must be an integer between 1 and 5,\nPlease input your summary rating\n", 
+	      									"Conference Organizer", JOptionPane.PLAIN_MESSAGE));
+	      					}
+	      				}
+		        		JFileChooser chooseRecommendation = new JFileChooser();
+		        		chooseRecommendation.setDialogTitle("Select your recommendation");
+		        		int status = chooseRecommendation.showOpenDialog(MainMenuGUI.this);
+		        		//user selects a file (did not hit cancel)
+		    	  		if (status != JFileChooser.CANCEL_OPTION) {
+		    	  			File recommendation = new File(chooseRecommendation.getSelectedFile().getPath());
+		            		submitTo.assignReview(username, recommendation.getPath());
+		            		submitTo.assignReviewRating(username, summaryRating);
+		    	  		}
+		    	  		
+		    	  		//redraw GUI
+		    	  		String conferenceFilename = conferenceName.toLowerCase() + ".ser";
+				  		try
+				  		{
+				  			FileOutputStream fos = new FileOutputStream(conferenceFilename);
+				  			ObjectOutputStream out = new ObjectOutputStream(fos);
+				  			out.writeObject(currentConference);
+				  			out.close();
+				  		} 
+				  		catch (Exception ex)
+				  		{
+				  			ex.printStackTrace();
+				  		}
+				  		MainMenuGUI.this.dispose();
+				  		new MainMenuGUI(conferenceName, username, "Reviewer");
+		      		}
+		      		
+		
+		  		}
+		  		else
+	      		{
+	      			JOptionPane.showMessageDialog(MainMenuGUI.this, "There are no Papers submitted to recommend");
+	      		}
+	  		}
+	  		catch (Exception e)
+	  		{
+	  			JOptionPane.showMessageDialog(MainMenuGUI.this, "There are no Papers submitted to recommend");
+	  		}
+	  		
+
+	  	}
+	  }	
 }
