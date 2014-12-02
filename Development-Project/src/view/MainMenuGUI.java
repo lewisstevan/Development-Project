@@ -296,7 +296,7 @@ public class MainMenuGUI extends JFrame {
         	JLabel paperStatus = new JLabel();
         	JLabel paperTitles = new JLabel();
         	JLabel paperReviews = new JLabel();
-        	paperScore.setText(((Paper)papersList[x]).getRating());
+        	paperScore.setText(String.valueOf(((Paper)papersList[x]).getRating()));
         	paperStatus.setText(((Paper)papersList[x]).getStatus());   	
         	paperTitles.setText(((Paper)papersList[x]).getTitle()); 	
         	paperReviews.setText(((Paper)papersList[x]).isReviewed());
