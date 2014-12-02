@@ -156,7 +156,7 @@ public class ShowPaperReviewsGUI extends JFrame{
         	JLabel reviewScore = new JLabel();
         	review.setText((String) reviews[x]);
         	reviewScore.setText(String.valueOf(ratings[x]));
-        	review.addMouseListener(new openLabelListener(review));
+        	review.addMouseListener(new openLabelListenerReview(review));
         	contentPane9.add(review);
         	contentPane8.add(reviewScore);
         }
@@ -185,6 +185,45 @@ public class ShowPaperReviewsGUI extends JFrame{
 		private JLabel myLabel;
 		
 		public openLabelListener(JLabel theLabel) {
+			this.myLabel = theLabel;
+		}
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			Paper paper = myConference.getPaper(myUsername, myRole, myLabel.getText());
+			File f = new File(paper.getFilePath());
+			try {
+				Desktop.getDesktop().open(f);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			myLabel.setForeground(Color.BLUE);
+			myLabel.repaint();			
+		}
+		@Override
+		public void mouseExited(MouseEvent e) {
+			myLabel.setForeground(Color.BLACK);
+			myLabel.repaint();
+		}
+		@Override
+		public void mousePressed(MouseEvent e) {}
+		@Override
+		public void mouseReleased(MouseEvent e) {}
+	}
+	
+	/**
+	 * Opens the selected paper from its JLabel representation in the GUI.
+	 * @author lewis_000
+	 * @author Kyle
+	 */
+	private class openLabelListenerReview implements MouseListener {
+		
+		private JLabel myLabel;
+		
+		public openLabelListenerReview(JLabel theLabel) {
 			this.myLabel = theLabel;
 		}
 		
