@@ -125,7 +125,7 @@ public class Conference implements Serializable{
 		{
 			result = Reviewers.keySet().contains(theUsername.toLowerCase());
 		}
-		else if (theRole == "          SubProgram Chair")
+		else if (theRole == "           SubProgram Chair")
 		{
 			result = Spcs.keySet().contains(theUsername.toLowerCase());
 		}
@@ -148,7 +148,7 @@ public class Conference implements Serializable{
 			num = Authors.get(theUsername).size();
 		} else if (theRole == "Reviewer") {
 			num = Authors.get(theUsername).size();;
-		} else if (theRole == "Spc") {
+		} else if (theRole == "SubProgram Chair") {
 			num = Authors.get(theUsername).size();;
 		}
 		return num;
@@ -167,9 +167,9 @@ public class Conference implements Serializable{
 			temp = Authors.keySet();
 		} else if (role == "Reviewer") {
 			temp = Reviewers.keySet();
-		} else if (role == "Spc") {
+		} else if (role == "SubProgram Chair") {
 			temp = Spcs.keySet();
-		} else if (role == "PC") {
+		} else if (role == "Program Chair") {
 			temp = new TreeSet<String>();
 			temp.add(PCusername);
 		}
@@ -184,7 +184,7 @@ public class Conference implements Serializable{
 	 * @param role The role of the user that the paper is being assigned to.
 	 */
 	public void assignPaper(String username, Paper paper, final String role) {
-		if (role == "Spc") {
+		if (role == "SubProgram Chair") {
 			
 			if(!Spcs.keySet().contains(username)) {
 				assignRole(username, role);
@@ -234,7 +234,7 @@ public class Conference implements Serializable{
 	 * @param role the array to place the user into.
 	 */
 	public void assignRole(final String username, final String role) {
-		if (role == "Spc") {
+		if (role == "SubProgram Chair") {
 			Spcs.put(username, new ArrayList<Paper>());
 			
 		} else if (role == "Reviewer") {
