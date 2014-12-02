@@ -718,13 +718,24 @@ public class MainMenuGUI extends JFrame {
 		}	
 	}
 	private class assignReviewerListener implements ActionListener {
+		Collection<Paper> papers;
+		Collection<String> reviewers;
+		
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-		
+			papers = MainMenuGUI.this.currentConference.getPapers(username, "SubProgram Chair");
+			reviewers = MainMenuGUI.this.currentConference.getUsers("Reviewers");
+			for(String rev : reviewers) {
+				for(Paper pap: papers) {
+				    if(currentConference.getPapers(rev, "Reviewer").size() <= 3){
+					    currentConference.assignPaper(rev, pap, "Reviewer");							
+				    }else {
+					    System.out.println("Reviewer " + rev + " already have 4 assigned papers to review.");
+				    }
+			    }
+			}
+		}	
 	}
 	private class uploadRecommendationListener implements ActionListener {
 	  	Collection<Paper> papers;
@@ -732,7 +743,7 @@ public class MainMenuGUI extends JFrame {
 	  	@Override
 		  	public void actionPerformed(ActionEvent arg0) {
 	  		papers = MainMenuGUI.this.currentConference.getPapers(username, "SubProgram Chair");
-	  		//user has papers to review
+	  		//user has papers to recommend
 	  		try
 	  		{
 		  		if (papers != null) {
