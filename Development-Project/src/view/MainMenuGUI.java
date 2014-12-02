@@ -51,7 +51,7 @@ public class MainMenuGUI extends JFrame {
 	 * The more papers that have been submitted the larger this multiplier will be and
 	 * the larger the panel will be to house them.
 	 */
-	int scrollSizeMultiplier;
+	private int scrollSizeMultiplier;
 	
 	/**
 	 * A date format to properly display the deadlines of each conference.
@@ -256,7 +256,7 @@ public class MainMenuGUI extends JFrame {
         scrollPanel.setPreferredSize(new Dimension(DEFAULT_SIZE.width-30, (DEFAULT_SIZE.height/2-30+(DEFAULT_SIZE.height/4-30)/2) - ((DEFAULT_SIZE.height/4-30)/2 + 5)));
  
         //set background colors for testing
-//        contentPane1.setBackground(Color.red);
+//        contentPane1.setBackground(Color.GRAY);
 //        conferenceLabel.setBackground(Color.BLACK); 
 //        nameLabel.setBackground(Color.BLACK);
 //        titleLabel.setBackground(Color.BLACK);
@@ -614,14 +614,15 @@ public class MainMenuGUI extends JFrame {
 		}
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			Paper currentPaper = MainMenuGUI.this.currentConference.getPaper(username, role, myLabel.getText());
-					File f = new File(currentPaper.getFilePath());
-					try {
-						Desktop.getDesktop().open(f);
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+			Paper curPaper = MainMenuGUI.this.currentConference.getPaper(username, role, myLabel.getText());
+			new ShowPaperReviewsGUI(currentConference, username, role, curPaper);
+//					File f = new File(currentPaper.getFilePath());
+//					try {
+//						Desktop.getDesktop().open(f);
+//					} catch (IOException e1) {
+//						// TODO Auto-generated catch block
+//						e1.printStackTrace();
+//					}
 			
 		}
 		@Override

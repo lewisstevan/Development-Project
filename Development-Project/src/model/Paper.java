@@ -234,6 +234,9 @@ public class Paper implements Serializable{
 		return myReviews.get(theReviewer);
 	}
 	
+	public Collection<Integer> getReviewRating() {
+		return myReviewRatings.values();
+	}
 	
 	/**
 	 * @return the myRecommendation
