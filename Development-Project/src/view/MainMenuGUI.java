@@ -63,7 +63,8 @@ public class MainMenuGUI extends JFrame {
 	contentPane7, contentPane8, contentPane9, conferenceNamePane;
     private JLabel conferenceLabel, titleLabel, deadlineLabel, deadlinelbl, conferencelbl, namelbl,
     nameLabel, paperNamelbl, paperStatuslbl, reviewLabel, spcScoreLabel;
-    private JButton uploadPaperBtn,unsubmitPaperBtn, backBtn, submitReviewBTN, decideStatusBtn, assignReviewerBtn, uploadRecommendationBtn;
+    private JButton uploadPaperBtn,unsubmitPaperBtn, backBtn, submitReviewBTN, decideStatusBtn, assignReviewerBtn, uploadRecommendationBtn, assignPaperBtn, 
+    assignSPCBtn, assignSPCPaperBtn;
     private JComboBox<String> changeRoleField;
     private JScrollPane scrollPanel;
     protected Conference currentConference;
@@ -71,8 +72,11 @@ public class MainMenuGUI extends JFrame {
     
     
     public MainMenuGUI(String currentConference, String username, String role) {
+    	assignSPCPaperBtn = new JButton();
+    	assignSPCBtn = new JButton();
     	decideStatusBtn = new JButton();
     	submitReviewBTN = new JButton();
+    	assignPaperBtn = new JButton();
     	this.conferenceName = currentConference;
     	df = new SimpleDateFormat();
     	df.applyPattern("dd/MM/yyyy");
@@ -132,6 +136,10 @@ public class MainMenuGUI extends JFrame {
 	        		scrollSizeMultiplier = this.currentConference.getPapers(this.username, role).size();
 	        		papersList = this.currentConference.getPapers(this.username, role).toArray();
 	        	}     
+	        	if (!(this.currentConference.getUsers("Author").contains(username)))
+	        	{
+	        		this.currentConference.assignRole(username.toLowerCase(), "Author");
+	        	}
 	            createComponents();
 	            addUniqueButtons();
 	        }
@@ -199,6 +207,9 @@ public class MainMenuGUI extends JFrame {
       	decideStatusBtn.addActionListener(new changeStatusBtnListener());
       	assignReviewerBtn.addActionListener(new assignReviewerListener());
       	uploadRecommendationBtn.addActionListener(new uploadRecommendationListener());
+      	assignPaperBtn.addActionListener(new assignPaperBtnListener());
+      	assignSPCBtn.addActionListener(new assignSPCBtnListener());
+      	assignSPCPaperBtn.addActionListener(new assignSPCPaperBtnListener());
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -297,9 +308,20 @@ public class MainMenuGUI extends JFrame {
         	JLabel paperTitles = new JLabel();
         	JLabel paperReviews = new JLabel();
         	paperScore.setText(String.valueOf(((Paper)papersList[x]).getRating()));
+        	if (!((Paper)papersList[x]).isRecommended())
+        	{
+        		paperScore.setText("Undecided");
+        	}
         	paperStatus.setText(((Paper)papersList[x]).getStatus());   	
         	paperTitles.setText(((Paper)papersList[x]).getTitle()); 	
-        	paperReviews.setText(((Paper)papersList[x]).isReviewed());
+        	if (((Paper)papersList[x]).isReviewed() == "Has Reviews")
+        	{
+        		paperReviews.setText(((Paper)papersList[x]).getReviewRatingAvg());
+        	}
+        	else
+        	{
+        		paperReviews.setText("Unreviewed");
+        	}
         	paperTitles.addMouseListener(new openLabelListener(paperTitles));
         	contentPane9.add(paperTitles);
         	contentPane8.add(paperScore);
@@ -398,19 +420,28 @@ public class MainMenuGUI extends JFrame {
         
         if (role == "Program Chair")
         {
+        	assignSPCPaperBtn.setPreferredSize(STANDARD_BUTTON_SIZE);
+        	assignSPCPaperBtn.setText("Assign Paper");
+        	assignSPCBtn.setPreferredSize(STANDARD_BUTTON_SIZE);
+        	assignSPCBtn.setText("Assign a Spc");
         	decideStatusBtn.setPreferredSize(new Dimension(STANDARD_BUTTON_SIZE.width + 50, STANDARD_BUTTON_SIZE.height));
         	decideStatusBtn.setText("Accept or Reject a Paper");
+        	contentPane3.add(assignSPCBtn);
+        	contentPane3.add(assignSPCPaperBtn);
         	contentPane3.add(decideStatusBtn);
         	contentPane3.repaint();
         }
         
         if (role == "SubProgram Chair") {
+        	assignPaperBtn.setPreferredSize(STANDARD_BUTTON_SIZE);
+        	assignPaperBtn.setText("Assign a Paper");
         	assignReviewerBtn.setPreferredSize(new Dimension(STANDARD_BUTTON_SIZE.width + 50, STANDARD_BUTTON_SIZE.height));
         	assignReviewerBtn.setText("Assign a Reviewer");
-        	uploadRecommendationBtn.setPreferredSize(new Dimension(STANDARD_BUTTON_SIZE.width + 75, STANDARD_BUTTON_SIZE.height));
-        	uploadRecommendationBtn.setText("Upload Recommendation");
+        	uploadRecommendationBtn.setPreferredSize(new Dimension(STANDARD_BUTTON_SIZE.width, STANDARD_BUTTON_SIZE.height));
+        	uploadRecommendationBtn.setText("Recommend");
         	contentPane3.add(backBtn);
         	contentPane3.add(assignReviewerBtn);
+        	contentPane3.add(assignPaperBtn);
         	contentPane3.add(uploadRecommendationBtn);
         	contentPane3.repaint();
         }
@@ -719,25 +750,43 @@ public class MainMenuGUI extends JFrame {
 		}	
 	}
 	private class assignReviewerListener implements ActionListener {
-		Collection<Paper> papers;
-		Collection<String> reviewers;
-		
 
+  		FileOutputStream fos = null;
+  	  	ObjectOutputStream out = null;
+		Object[] reviewerPossibilities;
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			papers = MainMenuGUI.this.currentConference.getPapers(username, "SubProgram Chair");
-			reviewers = MainMenuGUI.this.currentConference.getUsers("Reviewers");
-			for(String rev : reviewers) {
-				for(Paper pap: papers) {
-				    if(currentConference.getPapers(rev, "Reviewer").size() <= 3){
-					    currentConference.assignPaper(rev, pap, "Reviewer");							
-				    }else {
-					    System.out.println("Reviewer " + rev + " already have 4 assigned papers to review.");
-				    }
-			    }
+			reviewerPossibilities = MainMenuGUI.this.currentConference.getUsers("Author").toArray();
+			
+			
+			String result = (String)JOptionPane.showInputDialog(MainMenuGUI.this, "Choose an Author to promote to Reviewer",
+					"Conference Organizer",JOptionPane.PLAIN_MESSAGE,null,reviewerPossibilities,reviewerPossibilities[0]);
+			if (result == null)
+			{
+				JOptionPane.showMessageDialog(MainMenuGUI.this, "No Author was selected");
 			}
+			else
+			{
+				MainMenuGUI.this.currentConference.assignRole(result, "Reviewer");
+				try
+		  		{
+		  			fos = new FileOutputStream(conferenceFilename);
+		  			out = new ObjectOutputStream(fos);
+		  			out.writeObject(currentConference);
+		  			out.close();
+		  		} 
+		  		catch (Exception ex)
+		  		{
+		  			ex.printStackTrace();
+		  		}
+		  		MainMenuGUI.this.dispose();
+		  		new MainMenuGUI(conferenceName, username, role);
+			}
+			
 		}	
 	}
+	
+	
 	private class uploadRecommendationListener implements ActionListener {
 	  	Collection<Paper> papers;
 	  	
@@ -781,7 +830,7 @@ public class MainMenuGUI extends JFrame {
 		    	  		if (status != JFileChooser.CANCEL_OPTION) {
 		    	  			File recommendation = new File(chooseRecommendation.getSelectedFile().getPath());
 		            		submitTo.assignReview(username, recommendation.getPath());
-		            		submitTo.assignReviewRating(username, summaryRating);
+		            		submitTo.assignRecommendation(username, summaryRating);
 		    	  		}
 		    	  		
 		    	  		//redraw GUI
@@ -798,10 +847,8 @@ public class MainMenuGUI extends JFrame {
 				  			ex.printStackTrace();
 				  		}
 				  		MainMenuGUI.this.dispose();
-				  		new MainMenuGUI(conferenceName, username, "Reviewer");
-		      		}
-		      		
-		
+				  		new MainMenuGUI(conferenceName, username, "SubProgram Chair");
+		      		}		
 		  		}
 		  		else
 	      		{
@@ -812,8 +859,168 @@ public class MainMenuGUI extends JFrame {
 	  		{
 	  			JOptionPane.showMessageDialog(MainMenuGUI.this, "There are no Papers submitted to recommend");
 	  		}
-	  		
-
 	  	}
 	  }	
+	
+	private class assignPaperBtnListener implements ActionListener 
+	{
+		FileOutputStream fos = null;
+  	  	ObjectOutputStream out = null;
+		Object[] reviewerPossibilities;
+		Object[] papersTitles;
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			reviewerPossibilities = MainMenuGUI.this.currentConference.getUsers("Reviewer").toArray();
+			try
+			{
+				papersTitles = papersList;
+
+				for (int x = 0; x < papersList.length; x++)
+				{
+					papersTitles[x] = ((Paper)papersList[x]).getTitle();
+				}
+			String result = (String)JOptionPane.showInputDialog(MainMenuGUI.this, "Select a Reviewer", "Reviewer Select",JOptionPane.PLAIN_MESSAGE,null,
+					reviewerPossibilities,reviewerPossibilities[0]);
+			if (result == null)
+			{
+				JOptionPane.showMessageDialog(MainMenuGUI.this, "No reviewer was selected");
+			}
+			else
+			{
+				String paper = (String)JOptionPane.showInputDialog(MainMenuGUI.this, "Select a Paper", "Paper Select",JOptionPane.PLAIN_MESSAGE,null,
+						papersTitles,papersTitles[0]);
+				if (paper == null)
+				{
+					JOptionPane.showMessageDialog(MainMenuGUI.this, "No paper was selected");
+				}
+				else
+				{
+					MainMenuGUI.this.currentConference.assignPaper(result, MainMenuGUI.this.currentConference.getPaper(username, role, paper), "Reviewer");
+					try
+			  		{
+			  			fos = new FileOutputStream(conferenceFilename);
+			  			out = new ObjectOutputStream(fos);
+			  			out.writeObject(currentConference);
+			  			out.close();
+			  		} 
+			  		catch (Exception ex)
+			  		{
+			  			ex.printStackTrace();
+			  		}
+			  		MainMenuGUI.this.dispose();
+			  		new MainMenuGUI(conferenceName, username, role);
+				}
+			}
+			}
+			catch (Exception e)
+			{
+				JOptionPane.showMessageDialog(MainMenuGUI.this, "There are no Papers to assign");
+			}
+		}	
+	}
+	
+	private class assignSPCPaperBtnListener implements ActionListener
+	{
+		
+		FileOutputStream fos = null;
+  	  	ObjectOutputStream out = null;
+		Object[] spcPossibilities;
+		Object[] papersTitles;
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			spcPossibilities = MainMenuGUI.this.currentConference.getUsers("SubProgram Chair").toArray();
+			try
+			{
+				papersTitles = papersList;
+				for (int x = 0; x < papersList.length; x++)
+				{
+					papersTitles[x] = ((Paper)papersList[x]).getTitle();
+				}
+				String result = (String)JOptionPane.showInputDialog(MainMenuGUI.this, "Select a SubProgram Chair", "SubProgram Chair Select",JOptionPane.PLAIN_MESSAGE,null,
+						spcPossibilities,spcPossibilities[0]);
+				
+				if (result == null)
+				{
+					JOptionPane.showMessageDialog(MainMenuGUI.this, "No SubProgram Chair was selected");
+				}
+				else
+				{
+					String paper = (String)JOptionPane.showInputDialog(MainMenuGUI.this, "Select a Paper", "Paper Select",JOptionPane.PLAIN_MESSAGE,null,
+							papersTitles,papersTitles[0]);
+					if (paper == null)
+					{
+						JOptionPane.showMessageDialog(MainMenuGUI.this, "No paper was selected");
+					}
+					else
+					{
+						MainMenuGUI.this.currentConference.assignPaper(result, MainMenuGUI.this.currentConference.getPaper(username, role, paper), "SubProgram Chair");
+						try
+				  		{
+				  			fos = new FileOutputStream(conferenceFilename);
+				  			out = new ObjectOutputStream(fos);
+				  			out.writeObject(currentConference);
+				  			out.close();
+				  		} 
+				  		catch (Exception ex)
+				  		{
+				  			ex.printStackTrace();
+				  		}
+				  		MainMenuGUI.this.dispose();
+				  		new MainMenuGUI(conferenceName, username, role);
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				JOptionPane.showMessageDialog(MainMenuGUI.this, "There are no Papers to assign");
+			}
+		}		
+	}
+	
+	private class assignSPCBtnListener implements ActionListener
+	{
+		FileOutputStream fos = null;
+  	  	ObjectOutputStream out = null;
+  	  	Object[] spcPossibilities;
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			try
+			{
+				spcPossibilities = MainMenuGUI.this.currentConference.getUsers("Reviewer").toArray();
+				
+				
+				String result = (String)JOptionPane.showInputDialog(MainMenuGUI.this, "Choose a Reviewer to promote to SubProgram Chair",
+						"Conference Organizer",JOptionPane.PLAIN_MESSAGE,null,spcPossibilities,spcPossibilities[0]);
+				if (result == null)
+				{
+					JOptionPane.showMessageDialog(MainMenuGUI.this, "No Author was selected");
+				}
+				else
+				{
+					MainMenuGUI.this.currentConference.assignRole(result, "SubProgram Chair");
+					try
+			  		{
+			  			fos = new FileOutputStream(conferenceFilename);
+			  			out = new ObjectOutputStream(fos);
+			  			out.writeObject(currentConference);
+			  			out.close();
+			  		} 
+			  		catch (Exception ex)
+			  		{
+			  			ex.printStackTrace();
+			  		}
+			  		MainMenuGUI.this.dispose();
+			  		new MainMenuGUI(conferenceName, username, role);
+				}
+			} 
+			catch (Exception e)
+			{
+				JOptionPane.showMessageDialog(MainMenuGUI.this, "There are currently no Reviewers to promote");
+			}
+		}
+		
+	}
+	
+	
 }

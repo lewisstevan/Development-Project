@@ -3,6 +3,7 @@ package model;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -261,5 +262,23 @@ public class Paper implements Serializable{
 	 */
 	public String toString() {
 		return myTitle;
+	}
+	
+	public String getReviewRatingAvg()
+	{
+		try
+		{
+			int sum = 0;
+			Iterator<Integer> itr = myReviewRatings.values().iterator();
+			while (itr.hasNext())
+			{
+				sum = sum + itr.next();
+			}
+			return "" + sum/myReviewRatings.values().size();
+		}
+		catch (Exception e)
+		{
+			return "Unreviewed";
+		}
 	}
 }

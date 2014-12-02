@@ -148,7 +148,7 @@ public class ShowPaperReviewsGUI extends JFrame{
         contentPane2.add(contentPane4);
         Object[] reviews = myPaper.getReviews().toArray();
         Object[] ratings = myPaper.getReviewRating().toArray();
-        for (int x = 0; x  < scrollSizeMultiplier; x++)
+        for (int x = 0; x  < reviews.length; x++)
         {
         	JLabel review = new JLabel();
         	JLabel reviewScore = new JLabel();
