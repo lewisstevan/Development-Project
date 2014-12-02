@@ -148,6 +148,8 @@ public class ShowPaperReviewsGUI extends JFrame{
         contentPane2.add(contentPane4);
         Object[] reviews = myPaper.getReviews().toArray();
         Object[] ratings = myPaper.getReviewRating().toArray();
+        try
+        {
         for (int x = 0; x  < reviews.length; x++)
         {
         	JLabel review = new JLabel();
@@ -157,6 +159,11 @@ public class ShowPaperReviewsGUI extends JFrame{
         	review.addMouseListener(new openLabelListener(review));
         	contentPane9.add(review);
         	contentPane8.add(reviewScore);
+        }
+        }
+        catch (Exception e)
+        {
+        	
         }
         
         contentPane7.add(contentPane9);
@@ -183,9 +190,8 @@ public class ShowPaperReviewsGUI extends JFrame{
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			Paper currentPaper = myConference.getPaper(myUsername, myRole, myLabel.getText());
 			
-			File f = new File(currentPaper.getFilePath());
+			File f = new File(myLabel.getText());
 			try {
 				Desktop.getDesktop().open(f);
 			} catch (IOException e1) {

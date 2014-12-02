@@ -192,7 +192,7 @@ public class MainMenuGUI extends JFrame {
         paperStatuslbl.setText("Status");
         paperNamelbl.setText("Paper Title");
         titleLabel.setText("              Role:");
-        reviewLabel.setText("Reviews");
+        reviewLabel.setText("Review Score");
         conferenceLabel.setText("Conference:");
         nameLabel.setText("           Name:");
         uploadPaperBtn.setText("Upload Paper");
@@ -504,6 +504,7 @@ public class MainMenuGUI extends JFrame {
 			
 			  	  		File Paper = new File(choosePaper.getSelectedFile().getPath());
 				  		currentConference.assignPaper(username, new Paper(paperName, Paper.getPath()), role);
+				  		currentConference.getPaper(username, role, paperName).setAuthor(username.toLowerCase());
 				  		try
 				  		{
 				  			fos = new FileOutputStream(conferenceFilename);
@@ -897,6 +898,8 @@ public class MainMenuGUI extends JFrame {
 				else
 				{
 					MainMenuGUI.this.currentConference.assignPaper(result, MainMenuGUI.this.currentConference.getPaper(username, role, paper), "Reviewer");
+					if (!MainMenuGUI.this.currentConference.getPaper(username, role, paper).getAuthor().equalsIgnoreCase(result))
+					{
 					try
 			  		{
 			  			fos = new FileOutputStream(conferenceFilename);
@@ -910,6 +913,11 @@ public class MainMenuGUI extends JFrame {
 			  		}
 			  		MainMenuGUI.this.dispose();
 			  		new MainMenuGUI(conferenceName, username, role);
+					}
+			  		else
+					{
+						JOptionPane.showMessageDialog(MainMenuGUI.this, "Cannot assign a paper to its Author");
+					}
 				}
 			}
 			}
@@ -954,6 +962,8 @@ public class MainMenuGUI extends JFrame {
 					}
 					else
 					{
+						if (!MainMenuGUI.this.currentConference.getPaper(username, role, paper).getAuthor().equalsIgnoreCase(result))
+						{
 						MainMenuGUI.this.currentConference.assignPaper(result, MainMenuGUI.this.currentConference.getPaper(username, role, paper), "SubProgram Chair");
 						try
 				  		{
@@ -968,6 +978,11 @@ public class MainMenuGUI extends JFrame {
 				  		}
 				  		MainMenuGUI.this.dispose();
 				  		new MainMenuGUI(conferenceName, username, role);
+						}
+						else
+						{
+							JOptionPane.showMessageDialog(MainMenuGUI.this, "Cannot assign a paper to its Author");
+						}
 					}
 				}
 			}

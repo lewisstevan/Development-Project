@@ -28,6 +28,8 @@ public class Paper implements Serializable{
 	 * the Title of the paper
 	 */
     private String myTitle;
+    
+    private String myAuthor;
 	
     /**
      * the file path of the paper on the local file system
@@ -262,6 +264,16 @@ public class Paper implements Serializable{
 	 */
 	public String toString() {
 		return myTitle;
+	}
+	
+	public void setAuthor(String theAuthor)
+	{
+		myAuthor = theAuthor;
+	}
+	
+	public String getAuthor()
+	{
+		return myAuthor;
 	}
 	
 	public String getReviewRatingAvg()
